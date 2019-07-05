@@ -16,14 +16,14 @@ import Gallery from './Gallery';
 import HeroImg from './images/yousician-hero-mobile.png';
 
 // a single tree info in the api response
-export type Tree = {
-  image: string;
-  name: string;
+export type Song = {
+  id: string;
+  title: string;
+  artist: string;
+  images: string;
   species_name: string;
+  level: number;
 };
-
-// sorting order
-export type SortBy = 'AZ' | 'ZA';
 
 
 const GlobalStyle = createGlobalStyle`
@@ -44,19 +44,7 @@ const Hero = styled.header`
   background-size: cover;
   padding: 20px;
 `;
-const Footer = styled.footer`
-  min-height: 200px;
-  margin: 100px auto 30px;
-  padding: 10px;
-  display: flex;
-  align-items: flex-end;
-  color: rgb(103, 100, 100);
-`;
 
-const Latency = styled.p`
-  padding: 10px;
-  color: rgb(103, 100, 100);
-`;
 const AppWrapper = styled.div`
   height: 100%;
   font-family: 'Helvetica', 'Arial', 'sans-serif';
@@ -64,47 +52,61 @@ const AppWrapper = styled.div`
 
 const App: FunctionComponent = () => {
   interface IDataState {
-    trees: Tree[];
+    trees: Song[];
     loading: boolean;
     error: any;
+  }
+  type Favorite = {
+    id: "string";
+    songId: "string";
+  }
+  interface IFavoritesState {
+    favorites: Favorite[];
   }
   const initialData = { trees: [], loading: true, error: null };
   // main hook that keeps tree data coming from the api
   const [data, setData] = useState<IDataState>(initialData);
 
+  const [favorites, setFavorites] = useState<IFavoritesState>();
+
   // hook for the search
   const [searchText, setSearchText] = useState('');
 
-  // hook for toggling all photos
-  const [showAllPhotos, setShowAllPhotos] = useState<boolean>(false);
-
-  // hook for keeping latency duration
-  const [latency, setLatency] = useState(0);
-
-  // hook for sorting
-  const [sortBy, setSortBy] = useState<SortBy>('AZ');
-
   // read tree data from api and put it into state
   const fetchDataAndSetState = () => {
-    const treeDataUrl =
-      'https://s3.eu-central-1.amazonaws.com/ecosia-frontend-developer/trees.json';
-    const startTimestamp = Date.now();
-    axios
-      .get(treeDataUrl)
-      .then(({ data }) => {
-        // track how long the api call took
-        setLatency(Date.now() - startTimestamp);
+    const songsUrl =
+      'http://localhost:3004/songs';
 
+    axios
+      .get(songsUrl)
+      .then(({ data }) => {
+        console.log(data);
         // put response in state
-        setData({ ...data, error: null, loading: false });
+        setData({ trees: data, error: null, loading: false });
       })
       .catch(error => {
         setData({ trees: [], error: error, loading: false });
       });
   };
 
+  const fetchFavorites = () => {
+    const favoritesUrl =
+      'http://localhost:3004/favorites';
+
+    axios
+      .get(favoritesUrl)
+      .then(({ data }) => {
+        // put response in state
+        setFavorites({ favorites: data});
+      })
+      .catch(error => {
+        // TODO handle the error
+      });
+
+  }
   useEffect(() => {
     fetchDataAndSetState();
+    fetchFavorites();
   }, []);
 
   return (
@@ -134,11 +136,9 @@ const App: FunctionComponent = () => {
         <Gallery
           trees={data.trees}
           searchText={searchText}
-          showAllPhotos={showAllPhotos}
-          sortBy={sortBy}
+          favorites={favorites}
         />
 
-        <Footer />
       </AppWrapper>
   );
 };

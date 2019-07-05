@@ -3,14 +3,13 @@ import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 // ours
-import { Tree } from './App';
-import Frame from './Frame';
+import { Song } from './App';
+import Card from './Card';
 
 const GalleryWrapper = styled.ul`
   padding: 10px;
   display: grid;
   grid-template-columns: 1fr;
-  grid-gap: 2%;
   justify-content: center;
 
   @media only screen and (min-device-width: 667px) {
@@ -20,35 +19,26 @@ const GalleryWrapper = styled.ul`
 `;
 
 type GalleryProps = {
-  trees: Tree[];
-  showAllPhotos: boolean;
+  trees: Song[];
   searchText: string;
-  sortBy: string;
+  favorites: Favorite[]
 };
+
+const isFavorite = (song) => favorites
 
 const Gallery: FunctionComponent<GalleryProps> = ({
   trees,
-  showAllPhotos,
   searchText,
-  sortBy
+  favorites
 }) => (
   <GalleryWrapper>
     {trees
-      .filter(
-        (tree: Tree) =>
-          tree.name && tree.name.toLowerCase().includes(searchText)
-      )
-      .sort(
-        (treeA: Tree, treeB: Tree) =>
-          sortBy === 'AZ'
-            ? treeA.name.localeCompare(treeB.name)
-            : treeB.name.localeCompare(treeA.name)
-      )
-      .map((tree: Tree, index: number) => (
-        <Frame
-          tree={tree}
+      .map((song: Song, index: number) => (
+        <Card
+          song={song}
           key={index /*TODO in production get unique ids from backend*/}
-          showAllPhotos={showAllPhotos}
+          index={index}
+          isFavorite={}
         />
       ))}
   </GalleryWrapper>
