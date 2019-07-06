@@ -81,7 +81,6 @@ const App: FunctionComponent = () => {
     axios
       .get(songsUrl)
       .then(({ data }) => {
-        console.log(data);
         // put response in state
         setData({ trees: data, error: null, loading: false });
       })
@@ -98,16 +97,16 @@ const App: FunctionComponent = () => {
       .then(({ data }) => {
         // put response in state
         setFavorites({favorites: data});
-        console.log('oho favorites set', favorites, 'data: ', data);
       })
       .catch(error => {
         // TODO handle the error
       });
   };
+
   useEffect(() => {
     fetchDataAndSetState();
     fetchFavorites();
-  }, []);
+  });
 
   return (
     <AppWrapper>

@@ -24,6 +24,7 @@ type GalleryProps = {
   favorites: Favorite[];
 };
 
+// is this song id in favorites list?
 const isFavorite = (songId: string, favorites: Favorite[]) : boolean  =>  {
   return favorites.find((favorite: Favorite) => favorite.songId === songId) !== undefined;
 }
