@@ -60,16 +60,14 @@ const App: FunctionComponent = () => {
     error: any;
   }
 
-  interface IFavoritesState {
-    favorites: Favorite[];
-  }
+  interface IFavoritesState extends Array<Favorite> {}
+
   const initialData = { songs: [], loading: true, error: null };
-  const initialFavorite = { favorites: [{id: '', songId: ''}] };
 
   // main hook that keeps tree data coming from the api
   const [data, setData] = useState<IDataState>(initialData);
 
-  const [favorites, setFavorites] = useState<IFavoritesState>(initialFavorite);
+  const [favorites, setFavorites] = useState<IFavoritesState>([]);
 
   // hook for the search
   const [searchText, setSearchText] = useState('');
@@ -96,7 +94,7 @@ const App: FunctionComponent = () => {
       .get(favoritesUrl)
       .then(({ data }) => {
         // put response in state
-        setFavorites({favorites: data});
+        setFavorites(data);
       })
       .catch(error => {
         // TODO handle the error
@@ -135,7 +133,7 @@ const App: FunctionComponent = () => {
       <Gallery
         songs={data.songs}
         searchText={searchText}
-        favorites={favorites.favorites}
+        favorites={favorites}
       />
     </AppWrapper>
   );
