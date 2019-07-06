@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 // ours
 import { Song } from './App';
+import LevelIndicator from './LevelIndicator';
 
 type CardProps = {
   song: Song;
@@ -78,11 +79,11 @@ const Photo = styled.img`
 `;
 
 const Heading = styled.h1`
-  font-size: 16px;
+  font-size: 14px;
 `;
 
-const SubHeading = styled.h1`
-  font-size: 14px;
+const SubHeading = styled.h2`
+  font-size: 12px;
 `;
 
 const Card: FunctionComponent<CardProps> = ({ song, index, isFavorite }) => {
@@ -96,36 +97,7 @@ const Card: FunctionComponent<CardProps> = ({ song, index, isFavorite }) => {
         <SubHeading>{song.artist}</SubHeading>
       </div>
       <div>
-        {song.level}
-        <svg viewBox="0 0 42 42" className="donut">
-          <circle
-            className="donut-hole"
-            cx="21"
-            cy="21"
-            r="15.915"
-            fill="#fff"
-          />
-          <circle
-            className="donut-ring"
-            cx="21"
-            cy="21"
-            r="15.915"
-            fill="transparent"
-            stroke="#d2d3d4"
-            strokeWidth="3"
-          />
-          <circle
-            className="donut-segment"
-            cx="21"
-            cy="21"
-            r="15.915"
-            fill="transparent"
-            stroke="#ce4b99"
-            strokeWidth="3"
-            strokeDasharray="85 15"
-            strokeDashoffset="25"
-          />
-        </svg>
+    <LevelIndicator level={song.level} />
       </div>
       <div>{isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}</div>
     </ListItem>

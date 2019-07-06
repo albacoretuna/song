@@ -36,7 +36,6 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
     width: 100%;
     background: black;
-    font-family: 'Montserrat', sans-serif;
   }
   * {
     font-family: 'Montserrat', sans-serif;
@@ -77,7 +76,7 @@ const App: FunctionComponent = () => {
 
   // read tree data from api and put it into state
   const fetchDataAndSetState = () => {
-    const songsUrl = 'http://localhost:3004/songs';
+    const songsUrl = 'http://localhost:3004/songs?_start=1&_end=3';
 
     axios
       .get(songsUrl)
@@ -114,10 +113,10 @@ const App: FunctionComponent = () => {
       <GlobalStyle />
       {/* search and controls */}
       <Hero>
-        <h1>New songs delivered every week</h1>
+        <h1>NEW SONGS DELIVERED EVERY WEEK</h1>
         <h2>
-          Here are the most recent addittions to the Yousician App. Start
-          playing today
+          Here are the most recent additions to the Yousician App. Start playing
+          today!
         </h2>
         <Search setSearchText={setSearchText} />
       </Hero>
