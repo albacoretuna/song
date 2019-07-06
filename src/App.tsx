@@ -55,7 +55,7 @@ const AppWrapper = styled.div`
 
 const App: FunctionComponent = () => {
   interface IDataState {
-    trees: Song[];
+    songs: Song[];
     loading: boolean;
     error: any;
   }
@@ -63,7 +63,7 @@ const App: FunctionComponent = () => {
   interface IFavoritesState {
     favorites: Favorite[];
   }
-  const initialData = { trees: [], loading: true, error: null };
+  const initialData = { songs: [], loading: true, error: null };
   const initialFavorite = { favorites: [{id: '', songId: ''}] };
 
   // main hook that keeps tree data coming from the api
@@ -82,10 +82,10 @@ const App: FunctionComponent = () => {
       .get(songsUrl)
       .then(({ data }) => {
         // put response in state
-        setData({ trees: data, error: null, loading: false });
+        setData({ songs: data, error: null, loading: false });
       })
       .catch(error => {
-        setData({ trees: [], error: error, loading: false });
+        setData({ songs: [], error: error, loading: false });
       });
   };
 
@@ -106,7 +106,7 @@ const App: FunctionComponent = () => {
   useEffect(() => {
     fetchDataAndSetState();
     fetchFavorites();
-  });
+  }, []);
 
   return (
     <AppWrapper>
@@ -133,7 +133,7 @@ const App: FunctionComponent = () => {
 
       {/* main component */}
       <Gallery
-        trees={data.trees}
+        songs={data.songs}
         searchText={searchText}
         favorites={favorites.favorites}
       />

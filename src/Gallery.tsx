@@ -14,12 +14,11 @@ const GalleryWrapper = styled.ul`
 
   @media only screen and (min-device-width: 667px) {
     grid-template-columns: 1fr 1fr;
-    grid-gap: 2%;
   }
 `;
 
 type GalleryProps = {
-  trees: Song[];
+  songs: Song[];
   searchText: string;
   favorites: Favorite[];
 };
@@ -30,12 +29,12 @@ const isFavorite = (songId: string, favorites: Favorite[]) : boolean  =>  {
 }
 
 const Gallery: FunctionComponent<GalleryProps> = ({
-  trees,
+  songs,
   searchText,
   favorites
 }) => (
   <GalleryWrapper>
-    {trees
+    {songs
       .map((song: Song, index: number) => (
         <Card
           song={song}
