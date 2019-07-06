@@ -36,7 +36,11 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
     width: 100%;
     background: black;
+    font-family: 'Montserrat', sans-serif;
   }
+  * {
+    font-family: 'Montserrat', sans-serif;
+   }
 `;
 
 const Hero = styled.header`
@@ -50,7 +54,6 @@ const Hero = styled.header`
 
 const AppWrapper = styled.div`
   height: 100%;
-  font-family: 'Helvetica', 'Arial', 'sans-serif';
 `;
 
 const App: FunctionComponent = () => {
