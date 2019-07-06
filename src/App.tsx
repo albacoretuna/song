@@ -25,7 +25,10 @@ export type Song = {
   level: number;
 };
 
-
+export type Favorite = {
+  id: string;
+  songId: string;
+};
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
@@ -56,26 +59,24 @@ const App: FunctionComponent = () => {
     loading: boolean;
     error: any;
   }
-  type Favorite = {
-    id: "string";
-    songId: "string";
-  }
+
   interface IFavoritesState {
     favorites: Favorite[];
   }
   const initialData = { trees: [], loading: true, error: null };
+  const initialFavorite = { favorites: [{id: '', songId: ''}] };
+
   // main hook that keeps tree data coming from the api
   const [data, setData] = useState<IDataState>(initialData);
 
-  const [favorites, setFavorites] = useState<IFavoritesState>();
+  const [favorites, setFavorites] = useState<IFavoritesState>(initialFavorite);
 
   // hook for the search
   const [searchText, setSearchText] = useState('');
 
   // read tree data from api and put it into state
   const fetchDataAndSetState = () => {
-    const songsUrl =
-      'http://localhost:3004/songs';
+    const songsUrl = 'http://localhost:3004/songs';
 
     axios
       .get(songsUrl)
@@ -90,56 +91,54 @@ const App: FunctionComponent = () => {
   };
 
   const fetchFavorites = () => {
-    const favoritesUrl =
-      'http://localhost:3004/favorites';
+    const favoritesUrl = 'http://localhost:3004/favorites';
 
     axios
       .get(favoritesUrl)
       .then(({ data }) => {
         // put response in state
-        setFavorites({ favorites: data});
+        setFavorites({favorites: data});
+        console.log('oho favorites set', favorites, 'data: ', data);
       })
       .catch(error => {
         // TODO handle the error
       });
-
-  }
+  };
   useEffect(() => {
     fetchDataAndSetState();
     fetchFavorites();
   }, []);
 
   return (
-      <AppWrapper>
-        <GlobalStyle />
-        {/* search and controls */}
-        <Hero>
-          <h1>New songs delivered every week</h1>
-          <h2>
-            Here are the most recent addittions to the Yousician App. Start
-            playing today
-          </h2>
-          <Search setSearchText={setSearchText} />
-        </Hero>
-        {/* loading indicator */}
-        {data.loading && <p>Loading...</p>}
+    <AppWrapper>
+      <GlobalStyle />
+      {/* search and controls */}
+      <Hero>
+        <h1>New songs delivered every week</h1>
+        <h2>
+          Here are the most recent addittions to the Yousician App. Start
+          playing today
+        </h2>
+        <Search setSearchText={setSearchText} />
+      </Hero>
+      {/* loading indicator */}
+      {data.loading && <p>Loading...</p>}
 
-        {/* error handling */}
-        {data.error && (
-          <p>
-            Failed to load tree data, check dev console{' '}
-            {console.error(data.error)}
-          </p>
-        )}
+      {/* error handling */}
+      {data.error && (
+        <p>
+          Failed to load tree data, check dev console{' '}
+          {console.error(data.error)}
+        </p>
+      )}
 
-        {/* main component */}
-        <Gallery
-          trees={data.trees}
-          searchText={searchText}
-          favorites={favorites}
-        />
-
-      </AppWrapper>
+      {/* main component */}
+      <Gallery
+        trees={data.trees}
+        searchText={searchText}
+        favorites={favorites.favorites}
+      />
+    </AppWrapper>
   );
 };
 

@@ -10,6 +10,7 @@ import { Song } from './App';
 type CardProps = {
   song: Song;
   index: number;
+  isFavorite: boolean;
 };
 
 const Button = styled.button`
@@ -52,7 +53,7 @@ const SubHeading = styled.h1`
   font-size: 14px;
 `;
 
-const Card: FunctionComponent<CardProps> = ({ song, index }) => {
+const Card: FunctionComponent<CardProps> = ({ song, index, isFavorite }) => {
 
   return (
     <ListItem index={index}>
@@ -70,7 +71,7 @@ const Card: FunctionComponent<CardProps> = ({ song, index }) => {
     {song.level}
     </div>
     <div>
-    Heart
+    {isFavorite ? 'Heart' : ''}
     </div>
     </ListItem>
   );

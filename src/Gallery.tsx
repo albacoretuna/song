@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 // ours
-import { Song } from './App';
+import { Song, Favorite } from './App';
 import Card from './Card';
 
 const GalleryWrapper = styled.ul`
@@ -21,10 +21,12 @@ const GalleryWrapper = styled.ul`
 type GalleryProps = {
   trees: Song[];
   searchText: string;
-  favorites: Favorite[]
+  favorites: Favorite[];
 };
 
-const isFavorite = (song) => favorites
+const isFavorite = (songId: string, favorites: Favorite[]) : boolean  =>  {
+  return favorites.find((favorite: Favorite) => favorite.songId === songId) !== undefined;
+}
 
 const Gallery: FunctionComponent<GalleryProps> = ({
   trees,
@@ -38,7 +40,7 @@ const Gallery: FunctionComponent<GalleryProps> = ({
           song={song}
           key={index /*TODO in production get unique ids from backend*/}
           index={index}
-          isFavorite={}
+          isFavorite={isFavorite(song.id, favorites)}
         />
       ))}
   </GalleryWrapper>
