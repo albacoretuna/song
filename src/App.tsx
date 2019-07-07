@@ -86,11 +86,13 @@ const App: FunctionComponent = () => {
   const [loading, setLoading] = useState(true);
 
   // main hook that keeps song data coming from the api
-  const [songs, setSongs] = useState<ISongsState>([]);
+  const [loadedSongs, setLoadedSongs] = useState<ISongsState>([]);
 
   const [favorites, setFavorites] = useState<IFavoritesState>([]);
 
   const [isFetching, setIsFetching] = useState(false);
+
+  const [hasMore, setHasMore] = useState(true);
 
   const [lastSong, setLastSong] = useState(20);
 
@@ -100,7 +102,7 @@ const App: FunctionComponent = () => {
   const fetchSongs = (
     searchTerm?: string,
     start: number = 1,
-    end: number = 10,
+    end: number = 10
   ) => {
     const baseApiUrl = 'http://localhost:3004/';
     setLoading(true);
@@ -114,55 +116,60 @@ const App: FunctionComponent = () => {
     const favorites = axios.get(favoritesUrl);
     Promise.all([songs, favorites]).then(([songs, favorites]) => {
       setLoading(false);
-      setSongs(songs.data);
-      console.log(songs.headers);
-      setTotalSongsCount(songs.headers['x-total-count'])
+      setLoadedSongs(songs.data);
+      setTotalSongsCount(songs.headers['x-total-count']);
       setFavorites(favorites.data);
     });
   };
 
-  // read songs from api and put it into state
+  // For infinite scrolling
   const fetchMoreSongs = (
     next: boolean,
     searchTerm?: string,
     start: number = 1,
-    end: number = 10,
+    end: number = 10
   ) => {
-    const baseApiUrl = 'http://localhost:3004/';
-    if(next) {
-      start = lastSong;
+    if (!hasMore) {
+      return;
     }
-    end = Math.max(lastSong + 20, totalSongsCount + 1);
-    if(start >= totalSongsCount) return;
+    const baseApiUrl = 'http://localhost:3004/';
+    if (next) {
+      start = lastSong;
+      end = lastSong + 20;
+    }
 
-    console.log('start: ', start, ' end: ', end, ' totalSongsCount: ', totalSongsCount);
+
+    if (end > totalSongsCount) {
+      end = totalSongsCount;
+      setHasMore(false);
+    }
+
     setLoading(true);
-    setLastSong(prevLastSong => prevLastSong+20)
-    console.log('lastSong: ', lastSong);
+    setLastSong(prevLastSong => prevLastSong + 20);
+
     const songsUrl = `${baseApiUrl}songs?${start ? '_start=' + start : ''}&${
       end ? '_end=' + end : ''
     }&search_like=${searchTerm}`;
-    const songs = axios.get(songsUrl);
 
-    const favoritesUrl = `${baseApiUrl}favorites`;
-
-    const favorites = axios.get(favoritesUrl);
-    Promise.all([songs, favorites]).then(([songs, favorites]) => {
+    axios.get(songsUrl).then(({data}) => {
       setLoading(false);
-      setSongs(prevSongs => [...prevSongs, ...songs.data]);
+      setLoadedSongs(prevSongs => [...prevSongs, ...data]);
       setIsFetching(false);
-      setFavorites(favorites.data);
     });
   };
 
   useEffect(() => {
+    // The initial loading of songs and favorites
     fetchSongs('');
-  }, [ ]);
+  }, []);
 
-  useEffect(() => {
-  if (!isFetching) return;
-    fetchMoreSongs(true, '');
-  }, [isFetching]);
+  useEffect(
+    () => {
+      if (!isFetching) return;
+      fetchMoreSongs(true, '');
+    },
+    [isFetching]
+  );
 
   return (
     <AppWrapper>
@@ -177,14 +184,14 @@ const App: FunctionComponent = () => {
         <Search fetchSongs={fetchSongs} />
       </Hero>
       {/* loading indicator */}
-        <List
-          songs={songs}
-          favorites={favorites}
-          fetchMoreSongs={fetchMoreSongs}
-          setSongs={setSongs}
-          setIsFetching={setIsFetching}
-          isFetching={isFetching}
-        />
+      <List
+        loadedSongs={loadedSongs}
+        favorites={favorites}
+        fetchMoreSongs={fetchMoreSongs}
+        setLoadedSongs={setLoadedSongs}
+        setIsFetching={setIsFetching}
+        isFetching={isFetching}
+      />
       {loading && (
         <LoadingSpinner>
           <LoadingText>Loading...</LoadingText>

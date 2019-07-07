@@ -19,10 +19,10 @@ type Dispatch<A> = (value: A) => void;
 type SetStateAction<S> = S | ((prevState: S) => S);
 
 type ListProps = {
-  songs: Song[];
+  loadedSongs: Song[];
   favorites: Favorite[];
   fetchMoreSongs: (next: boolean, searchKeyword?: string, start?: number, end?: number) => void;
-  setSongs: Dispatch<SetStateAction<Song[]>>;
+  setLoadedSongs: Dispatch<SetStateAction<Song[]>>;
   setIsFetching: Dispatch<SetStateAction<boolean>>;
   isFetching: boolean
 };
@@ -36,14 +36,11 @@ const isFavorite = (songId: string, favorites: Favorite[]): boolean => {
   );
 };
 
-// gets the initial list
-// loads more, adds them to those and calls useState? :)
-// TODO
 const List: FunctionComponent<ListProps> = ({
-  songs,
+  loadedSongs,
   favorites,
   fetchMoreSongs,
-  setSongs,
+  setLoadedSongs,
   setIsFetching,
   isFetching
 }) => {
@@ -53,11 +50,11 @@ const List: FunctionComponent<ListProps> = ({
     const isNotEndOfPageYet = window.innerHeight + document.documentElement.scrollTop !==
       document.documentElement.offsetHeight;
     if (isNotEndOfPageYet) return;
+
     setIsFetching(true);
 
-    fetchMoreSongs(true, undefined);
-    console.log('load more now!');
   };
+
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => {
@@ -70,7 +67,7 @@ const List: FunctionComponent<ListProps> = ({
 
   return (
     <ListWrapper>
-      {songs.map((song: Song, index: number) => (
+      {loadedSongs.map((song: Song, index: number) => (
         <Card
           song={song}
           key={song.id}
