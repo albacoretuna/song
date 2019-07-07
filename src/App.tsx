@@ -51,6 +51,16 @@ const Hero = styled.header`
   padding: 20px;
 `;
 
+const Heading = styled.h1`
+  font-size: 20px;
+  font-weight: 900;
+`;
+
+const SubHeading = styled.h2`
+  font-size: 14px;
+  font-weight: 400;
+`;
+
 const AppWrapper = styled.div`
   height: 100%;
 `;
@@ -113,11 +123,11 @@ const App: FunctionComponent = () => {
       <GlobalStyle />
       {/* search and controls */}
       <Hero>
-        <h1>NEW SONGS DELIVERED EVERY WEEK</h1>
-        <h2>
+        <Heading>NEW SONGS DELIVERED EVERY WEEK</Heading>
+        <SubHeading>
           Here are the most recent additions to the Yousician App. Start playing
           today!
-        </h2>
+        </SubHeading>
         <Search setSearchText={setSearchText} />
       </Hero>
       {/* loading indicator */}

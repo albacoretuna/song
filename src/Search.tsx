@@ -9,7 +9,6 @@ const SearchBox = styled.form`
   display: flex;
   background: white;
   margin-top: 10px;
-  border: 2px solid grey;
   border-radius: 20px;
   align-items: center;
   padding: 10px;

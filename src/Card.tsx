@@ -81,10 +81,13 @@ const Photo = styled.img`
 
 const Heading = styled.h1`
   font-size: 14px;
+  font-weight: 500;
 `;
 
 const SubHeading = styled.h2`
   font-size: 12px;
+  color: ${Colors.Gray};
+  font-weight: 500;
 `;
 
 const Card: FunctionComponent<CardProps> = ({ song, index, isFavorite }) => {
