@@ -11,10 +11,7 @@ const GalleryWrapper = styled.ul`
   display: grid;
   grid-template-columns: 1fr;
   justify-content: center;
-
-  @media only screen and (min-device-width: 667px) {
-    grid-template-columns: 1fr 1fr;
-  }
+  margin: 0;
 `;
 
 type GalleryProps = {
@@ -38,7 +35,7 @@ const Gallery: FunctionComponent<GalleryProps> = ({
       .map((song: Song, index: number) => (
         <Card
           song={song}
-          key={index /*TODO in production get unique ids from backend*/}
+          key={song.id}
           index={index}
           isFavorite={isFavorite(song.id, favorites)}
         />

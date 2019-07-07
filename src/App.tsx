@@ -7,13 +7,13 @@
 // libs
 import React, { useState, useEffect, FunctionComponent } from 'react';
 import axios from 'axios';
-
 import styled, { createGlobalStyle } from 'styled-components';
 
 // ours
 import Search from './Search';
 import Gallery from './Gallery';
 import HeroImg from './images/yousician-hero-mobile.png';
+import SpinnerSvg from './images/audio.svg';
 
 // a single tree info in the api response
 export type Song = {
@@ -65,16 +65,31 @@ const AppWrapper = styled.div`
   height: 100%;
 `;
 
+const LoadingSpinner = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  color: white;
+  padding: 20px;
+`;
+
+const LoadingText = styled.p`
+  margin: 10px;
+  color: white;
+`;
+
 const App: FunctionComponent = () => {
   interface IDataState {
     songs: Song[];
-    loading: boolean;
     error: any;
   }
 
   interface IFavoritesState extends Array<Favorite> {}
 
-  const initialData = { songs: [], loading: true, error: null };
+  const initialData = { songs: [], error: null };
+
+  const [loading, setLoading] = useState(true);
 
   // main hook that keeps tree data coming from the api
   const [data, setData] = useState<IDataState>(initialData);
@@ -86,30 +101,35 @@ const App: FunctionComponent = () => {
 
   // read tree data from api and put it into state
   const fetchDataAndSetState = () => {
-    const songsUrl = 'http://localhost:3004/songs';
-
+    const songsUrl = 'http://localhost:3004/songs?_start=1&_end=11';
+    setLoading(true);
     axios
       .get(songsUrl)
       .then(({ data }) => {
         // put response in state
-        setData({ songs: data, error: null, loading: false });
+        setData({ songs: data, error: null });
+        setLoading(false);
       })
       .catch(error => {
-        setData({ songs: [], error: error, loading: false });
+        setData({ songs: [], error: error });
+        setLoading(false);
       });
   };
 
   const fetchFavorites = () => {
     const favoritesUrl = 'http://localhost:3004/favorites';
+    setLoading(true);
 
     axios
       .get(favoritesUrl)
       .then(({ data }) => {
+        setLoading(false);
         // put response in state
         setFavorites(data);
       })
       .catch(error => {
         // TODO handle the error
+        setLoading(false);
       });
   };
 
@@ -121,7 +141,7 @@ const App: FunctionComponent = () => {
   return (
     <AppWrapper>
       <GlobalStyle />
-      {/* search and controls */}
+      {/* Search and hero */}
       <Hero>
         <Heading>NEW SONGS DELIVERED EVERY WEEK</Heading>
         <SubHeading>
@@ -131,7 +151,12 @@ const App: FunctionComponent = () => {
         <Search setSearchText={setSearchText} />
       </Hero>
       {/* loading indicator */}
-      {data.loading && <p>Loading...</p>}
+      {loading && (
+        <LoadingSpinner>
+          <img src={SpinnerSvg} alt="Loading" />
+          <LoadingText>Loading...</LoadingText>
+        </LoadingSpinner>
+      )}
 
       {/* error handling */}
       {data.error && (
