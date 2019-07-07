@@ -15,7 +15,7 @@ import List from './List';
 import HeroImg from './images/yousician-hero-mobile.png';
 import SpinnerSvg from './images/audio.svg';
 
-// a single tree info in the api response
+// a single song info in the api response
 export type Song = {
   id: string;
   title: string;
@@ -80,42 +80,89 @@ const LoadingText = styled.p`
 `;
 
 const App: FunctionComponent = () => {
-  interface IDataState {
-    songs: Song[];
-    error: any;
-  }
-
+  interface ISongsState extends Array<Song> {}
   interface IFavoritesState extends Array<Favorite> {}
-
-  const initialData = { songs: [], error: null };
 
   const [loading, setLoading] = useState(true);
 
-  // main hook that keeps tree data coming from the api
-  const [data, setData] = useState<IDataState>(initialData);
+  // main hook that keeps song data coming from the api
+  const [songs, setSongs] = useState<ISongsState>([]);
 
   const [favorites, setFavorites] = useState<IFavoritesState>([]);
 
-  // read tree data from api and put it into state
-  const fetchData = (searchTerm?: string) => {
+  const [isFetching, setIsFetching] = useState(false);
+
+  const [lastSong, setLastSong] = useState(20);
+
+  const [totalSongsCount, setTotalSongsCount] = useState(100);
+
+  // read songs from api and put it into state
+  const fetchSongs = (
+    searchTerm?: string,
+    start: number = 1,
+    end: number = 10,
+  ) => {
+    const baseApiUrl = 'http://localhost:3004/';
     setLoading(true);
-    const songsUrl = `http://localhost:3004/songs?_start=1&_end=11&search_like=${searchTerm}`;
+    const songsUrl = `${baseApiUrl}songs?${start ? '_start=' + start : ''}&${
+      end ? '_end=' + end : ''
+    }&search_like=${searchTerm}`;
     const songs = axios.get(songsUrl);
 
-    const favoritesUrl = 'http://localhost:3004/favorites';
+    const favoritesUrl = `${baseApiUrl}favorites`;
 
     const favorites = axios.get(favoritesUrl);
-
     Promise.all([songs, favorites]).then(([songs, favorites]) => {
       setLoading(false);
-      setData({ songs: songs.data, error: null });
+      setSongs(songs.data);
+      console.log(songs.headers);
+      setTotalSongsCount(songs.headers['x-total-count'])
+      setFavorites(favorites.data);
+    });
+  };
+
+  // read songs from api and put it into state
+  const fetchMoreSongs = (
+    next: boolean,
+    searchTerm?: string,
+    start: number = 1,
+    end: number = 10,
+  ) => {
+    const baseApiUrl = 'http://localhost:3004/';
+    if(next) {
+      start = lastSong;
+    }
+    end = Math.max(lastSong + 20, totalSongsCount + 1);
+    if(start >= totalSongsCount) return;
+
+    console.log('start: ', start, ' end: ', end, ' totalSongsCount: ', totalSongsCount);
+    setLoading(true);
+    setLastSong(prevLastSong => prevLastSong+20)
+    console.log('lastSong: ', lastSong);
+    const songsUrl = `${baseApiUrl}songs?${start ? '_start=' + start : ''}&${
+      end ? '_end=' + end : ''
+    }&search_like=${searchTerm}`;
+    const songs = axios.get(songsUrl);
+
+    const favoritesUrl = `${baseApiUrl}favorites`;
+
+    const favorites = axios.get(favoritesUrl);
+    Promise.all([songs, favorites]).then(([songs, favorites]) => {
+      setLoading(false);
+      setSongs(prevSongs => [...prevSongs, ...songs.data]);
+      setIsFetching(false);
       setFavorites(favorites.data);
     });
   };
 
   useEffect(() => {
-    fetchData('');
-  }, []);
+    fetchSongs('');
+  }, [ ]);
+
+  useEffect(() => {
+  if (!isFetching) return;
+    fetchMoreSongs(true, '');
+  }, [isFetching]);
 
   return (
     <AppWrapper>
@@ -127,24 +174,22 @@ const App: FunctionComponent = () => {
           Here are the most recent additions to the Yousician App. Start playing
           today!
         </SubHeading>
-        <Search fetchData={fetchData} />
+        <Search fetchSongs={fetchSongs} />
       </Hero>
       {/* loading indicator */}
-      {loading ? (
+        <List
+          songs={songs}
+          favorites={favorites}
+          fetchMoreSongs={fetchMoreSongs}
+          setSongs={setSongs}
+          setIsFetching={setIsFetching}
+          isFetching={isFetching}
+        />
+      {loading && (
         <LoadingSpinner>
           <LoadingText>Loading...</LoadingText>
           <img src={SpinnerSvg} alt="Loading" />
         </LoadingSpinner>
-      ) : (
-        <List songs={data.songs} favorites={favorites} />
-      )}
-
-      {/* error handling */}
-      {data.error && (
-        <p>
-          Failed to load tree data, check dev console{' '}
-          {console.error(data.error)}
-        </p>
       )}
     </AppWrapper>
   );
