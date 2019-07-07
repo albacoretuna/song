@@ -1,5 +1,5 @@
 // libs
-import React, { FunctionComponent, Fragment } from 'react';
+import React, { FunctionComponent, Fragment, useState } from 'react';
 import styled from 'styled-components';
 
 // ours
@@ -36,24 +36,31 @@ type Dispatch<A> = (value: A) => void;
 type SetStateAction<S> = S | ((prevState: S) => S);
 
 type SearchProps = {
-  setSearchText: Dispatch<SetStateAction<string>>
-}
+  fetchData: (searchKeyword: string) => void;
+};
 
-const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-}
+const Search: FunctionComponent<SearchProps> = ({ fetchData }) => {
+  // hook for the search
+  const [inputContent, setInputContent] = useState('');
 
-const Search: FunctionComponent<SearchProps> = ({setSearchText}) => <Fragment>
-      <SearchBox onSubmit={handleSubmit}>
-        <Input
-          id="search"
-          type="search"
-          placeholder="Search for songs by artist or title"
-          onChange={event => setSearchText(event.target.value.toLowerCase())}
-        />
-        <Button type="submit"/>
-       </SearchBox>
-</Fragment>
+  const handleInputChange = (inputContent: string) => setInputContent(inputContent);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    fetchData(inputContent);
+  };
+
+  return (
+    <SearchBox onSubmit={handleSubmit}>
+      <Input
+        id="search"
+        type="search"
+        placeholder="Search for songs by artist or title"
+        onChange={event => handleInputChange(event.target.value.toLowerCase())}
+      />
+      <Button type="submit" />
+    </SearchBox>
+  );
+};
 
 export default Search;
-

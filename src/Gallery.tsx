@@ -16,7 +16,6 @@ const GalleryWrapper = styled.ul`
 
 type GalleryProps = {
   songs: Song[];
-  searchText: string;
   favorites: Favorite[];
 };
 
@@ -27,7 +26,6 @@ const isFavorite = (songId: string, favorites: Favorite[]) : boolean  =>  {
 
 const Gallery: FunctionComponent<GalleryProps> = ({
   songs,
-  searchText,
   favorites
 }) => (
   <GalleryWrapper>

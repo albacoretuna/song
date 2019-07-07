@@ -96,13 +96,10 @@ const App: FunctionComponent = () => {
 
   const [favorites, setFavorites] = useState<IFavoritesState>([]);
 
-  // hook for the search
-  const [searchText, setSearchText] = useState('');
-
   // read tree data from api and put it into state
-  const fetchData = () => {
+  const fetchData = (searchTerm?: string) => {
     setLoading(true);
-    const songsUrl = 'http://localhost:3004/songs?_start=1&_end=11';
+    const songsUrl = `http://localhost:3004/songs?_start=1&_end=11&search_like=${searchTerm}`;
     const songs = axios.get(songsUrl);
 
     const favoritesUrl = 'http://localhost:3004/favorites';
@@ -116,11 +113,8 @@ const App: FunctionComponent = () => {
     });
   };
 
-  const fetchFavorites = () => {};
-
   useEffect(() => {
-    fetchData();
-    fetchFavorites();
+    fetchData('');
   }, []);
 
   return (
@@ -133,14 +127,16 @@ const App: FunctionComponent = () => {
           Here are the most recent additions to the Yousician App. Start playing
           today!
         </SubHeading>
-        <Search setSearchText={setSearchText} />
+        <Search fetchData={fetchData} />
       </Hero>
       {/* loading indicator */}
-      {loading && (
+      {loading ? (
         <LoadingSpinner>
           <LoadingText>Loading...</LoadingText>
           <img src={SpinnerSvg} alt="Loading" />
         </LoadingSpinner>
+      ) : (
+        <Gallery songs={data.songs} favorites={favorites} />
       )}
 
       {/* error handling */}
@@ -150,13 +146,6 @@ const App: FunctionComponent = () => {
           {console.error(data.error)}
         </p>
       )}
-
-      {/* main component */}
-      <Gallery
-        songs={data.songs}
-        searchText={searchText}
-        favorites={favorites}
-      />
     </AppWrapper>
   );
 };
