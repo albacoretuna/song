@@ -100,41 +100,26 @@ const App: FunctionComponent = () => {
   const [searchText, setSearchText] = useState('');
 
   // read tree data from api and put it into state
-  const fetchDataAndSetState = () => {
+  const fetchData = () => {
+    setLoading(true);
     const songsUrl = 'http://localhost:3004/songs?_start=1&_end=11';
-    setLoading(true);
-    axios
-      .get(songsUrl)
-      .then(({ data }) => {
-        // put response in state
-        setData({ songs: data, error: null });
-        setLoading(false);
-      })
-      .catch(error => {
-        setData({ songs: [], error: error });
-        setLoading(false);
-      });
-  };
+    const songs = axios.get(songsUrl);
 
-  const fetchFavorites = () => {
     const favoritesUrl = 'http://localhost:3004/favorites';
-    setLoading(true);
 
-    axios
-      .get(favoritesUrl)
-      .then(({ data }) => {
-        setLoading(false);
-        // put response in state
-        setFavorites(data);
-      })
-      .catch(error => {
-        // TODO handle the error
-        setLoading(false);
-      });
+    const favorites = axios.get(favoritesUrl);
+
+    Promise.all([songs, favorites]).then(([songs, favorites]) => {
+      setLoading(false);
+      setData({ songs: songs.data, error: null });
+      setFavorites(favorites.data);
+    });
   };
+
+  const fetchFavorites = () => {};
 
   useEffect(() => {
-    fetchDataAndSetState();
+    fetchData();
     fetchFavorites();
   }, []);
 
