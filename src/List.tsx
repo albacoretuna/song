@@ -54,10 +54,7 @@ const List: FunctionComponent<ListProps> = ({
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
-
-
-
+  });
 
   return (
     <ListWrapper>

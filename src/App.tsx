@@ -128,6 +128,7 @@ const App: FunctionComponent = () => {
   useEffect(() => {
     // The initial loading of songs and favorites
     fetchSongs('');
+   // eslint-disable-next-line
   }, []);
 
   useEffect(
@@ -137,6 +138,7 @@ const App: FunctionComponent = () => {
 
       fetchMoreSongs('');
     },
+     // eslint-disable-next-line
     [isFetching]
   );
 
