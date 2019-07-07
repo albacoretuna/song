@@ -7,13 +7,18 @@
 // libs
 import React, { useState, useEffect, FunctionComponent } from 'react';
 import axios from 'axios';
-import styled, { createGlobalStyle } from 'styled-components';
 
 // ours
 import Search from './Search';
 import List from './List';
-import HeroImg from './images/yousician-hero-mobile.png';
-import SpinnerSvg from './images/audio.svg';
+import GlobalStyle from './GlobalStyle';
+import {
+  Hero,
+  Heading,
+  SubHeading,
+  AppWrapper,
+  LoadingSpinner
+} from './App.Components';
 
 // a single song info in the api response
 export type Song = {
@@ -29,61 +34,12 @@ export type Favorite = {
   id: string;
   songId: string;
 };
-const GlobalStyle = createGlobalStyle`
-  body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    background: black;
-  }
-  * {
-    font-family: 'Montserrat', sans-serif;
-   }
-`;
-
-const Hero = styled.header`
-  text-align: center;
-  color: white;
-  background: red;
-  background: url(${HeroImg}) no-repeat;
-  background-size: cover;
-  padding: 20px;
-`;
-
-const Heading = styled.h1`
-  font-size: 20px;
-  font-weight: 900;
-`;
-
-const SubHeading = styled.h2`
-  font-size: 14px;
-  font-weight: 400;
-`;
-
-const AppWrapper = styled.div`
-  height: 100%;
-`;
-
-const LoadingSpinner = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto;
-  color: white;
-  padding: 20px;
-`;
-
-const LoadingText = styled.p`
-  margin: 15px;
-  color: white;
-`;
 
 const App: FunctionComponent = () => {
   interface ISongsState extends Array<Song> {}
   interface IFavoritesState extends Array<Favorite> {}
 
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLading] = useState(true);
 
   // main hook that keeps song data coming from the api
   const [loadedSongs, setLoadedSongs] = useState<ISongsState>([]);
@@ -98,24 +54,37 @@ const App: FunctionComponent = () => {
 
   const [totalSongsCount, setTotalSongsCount] = useState(100);
 
-  // read songs from api and put it into state
+  const baseApiUrl = 'http://localhost:3004/';
+
+  // how many songs to load each time
+  const pageSize = 20;
+
+  // insert pramas to the url for fetching songs
+  const getSongsUrl = (
+    baseApiUrl: string,
+    start: number,
+    end: number,
+    searchTerm?: string
+  ) =>
+    `${baseApiUrl}songs?${start ? '_start=' + start : ''}&${
+      end ? '_end=' + end : ''
+    }&${searchTerm ? 'search_like=' + searchTerm : ''}`;
+
+  // read songs from api and put it into state, for first load
   const fetchSongs = (
     searchTerm?: string,
     start: number = 0,
-    end: number = 20
+    end: number = pageSize
   ) => {
-    const baseApiUrl = 'http://localhost:3004/';
-    setLoading(true);
-    const songsUrl = `${baseApiUrl}songs?${start ? '_start=' + start : ''}&${
-      end ? '_end=' + end : ''
-    }&search_like=${searchTerm}`;
-    const songs = axios.get(songsUrl);
+    setIsLading(true);
+
+    const songs = axios.get(getSongsUrl(baseApiUrl, start, end, searchTerm));
 
     const favoritesUrl = `${baseApiUrl}favorites`;
 
     const favorites = axios.get(favoritesUrl);
     Promise.all([songs, favorites]).then(([songs, favorites]) => {
-      setLoading(false);
+      setIsLading(false);
       setLoadedSongs(songs.data);
       setTotalSongsCount(songs.headers['x-total-count']);
       setFavorites(favorites.data);
@@ -126,33 +95,31 @@ const App: FunctionComponent = () => {
   const fetchMoreSongs = (
     searchTerm?: string,
     start: number = 0,
-    end: number = 20
+    end: number = pageSize
   ) => {
     if (!hasMore) {
       return;
     }
-    const baseApiUrl = 'http://localhost:3004/';
 
-    // how many songs to load each time
-    const pageSize =  20;
     start = lastSong;
     end = lastSong + pageSize;
-
 
     if (end > totalSongsCount) {
       end = totalSongsCount;
       setHasMore(false);
     }
 
-    setLoading(true);
+    setIsLading(true);
     setLastSong(prevLastSong => prevLastSong + 20);
 
     const songsUrl = `${baseApiUrl}songs?${start ? '_start=' + start : ''}&${
       end ? '_end=' + end : ''
     }&search_like=${searchTerm}`;
 
-    axios.get(songsUrl).then(({data}) => {
-      setLoading(false);
+    axios.get(songsUrl).then(({ data }) => {
+      setIsLading(false);
+
+      // add the fetched songs to the previously loaded songs
       setLoadedSongs(prevSongs => [...prevSongs, ...data]);
       setIsFetching(false);
     });
@@ -164,8 +131,10 @@ const App: FunctionComponent = () => {
   }, []);
 
   useEffect(
+    // handle fetch on scroll for songs
     () => {
       if (!isFetching) return;
+
       fetchMoreSongs('');
     },
     [isFetching]
@@ -174,6 +143,7 @@ const App: FunctionComponent = () => {
   return (
     <AppWrapper>
       <GlobalStyle />
+
       {/* Search and hero */}
       <Hero>
         <Heading>NEW SONGS DELIVERED EVERY WEEK</Heading>
@@ -183,19 +153,16 @@ const App: FunctionComponent = () => {
         </SubHeading>
         <Search fetchSongs={fetchSongs} />
       </Hero>
+
+      {/* The main song list*/}
       <List
         loadedSongs={loadedSongs}
         favorites={favorites}
-        setLoadedSongs={setLoadedSongs}
         setIsFetching={setIsFetching}
-        isFetching={isFetching}
       />
-      {loading && (
-        <LoadingSpinner>
-          <LoadingText>Loading...</LoadingText>
-          <img src={SpinnerSvg} alt="Loading" />
-        </LoadingSpinner>
-      )}
+
+      {/* spinner */}
+      {isLoading && <LoadingSpinner />}
     </AppWrapper>
   );
 };

@@ -21,9 +21,7 @@ type SetStateAction<S> = S | ((prevState: S) => S);
 type ListProps = {
   loadedSongs: Song[];
   favorites: Favorite[];
-  setLoadedSongs: Dispatch<SetStateAction<Song[]>>;
   setIsFetching: Dispatch<SetStateAction<boolean>>;
-  isFetching: boolean
 };
 
 
@@ -38,9 +36,7 @@ const isFavorite = (songId: string, favorites: Favorite[]): boolean => {
 const List: FunctionComponent<ListProps> = ({
   loadedSongs,
   favorites,
-  setLoadedSongs,
   setIsFetching,
-  isFetching
 }) => {
 
 
