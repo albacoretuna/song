@@ -75,7 +75,7 @@ const LoadingSpinner = styled.div`
 `;
 
 const LoadingText = styled.p`
-  margin: 10px;
+  margin: 15px;
   color: white;
 `;
 
@@ -101,8 +101,8 @@ const App: FunctionComponent = () => {
   // read songs from api and put it into state
   const fetchSongs = (
     searchTerm?: string,
-    start: number = 1,
-    end: number = 10
+    start: number = 0,
+    end: number = 20
   ) => {
     const baseApiUrl = 'http://localhost:3004/';
     setLoading(true);
@@ -124,19 +124,19 @@ const App: FunctionComponent = () => {
 
   // For infinite scrolling
   const fetchMoreSongs = (
-    next: boolean,
     searchTerm?: string,
-    start: number = 1,
-    end: number = 10
+    start: number = 0,
+    end: number = 20
   ) => {
     if (!hasMore) {
       return;
     }
     const baseApiUrl = 'http://localhost:3004/';
-    if (next) {
-      start = lastSong;
-      end = lastSong + 20;
-    }
+
+    // how many songs to load each time
+    const pageSize =  20;
+    start = lastSong;
+    end = lastSong + pageSize;
 
 
     if (end > totalSongsCount) {
@@ -166,7 +166,7 @@ const App: FunctionComponent = () => {
   useEffect(
     () => {
       if (!isFetching) return;
-      fetchMoreSongs(true, '');
+      fetchMoreSongs('');
     },
     [isFetching]
   );
@@ -183,11 +183,9 @@ const App: FunctionComponent = () => {
         </SubHeading>
         <Search fetchSongs={fetchSongs} />
       </Hero>
-      {/* loading indicator */}
       <List
         loadedSongs={loadedSongs}
         favorites={favorites}
-        fetchMoreSongs={fetchMoreSongs}
         setLoadedSongs={setLoadedSongs}
         setIsFetching={setIsFetching}
         isFetching={isFetching}
