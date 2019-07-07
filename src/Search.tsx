@@ -1,5 +1,5 @@
 // libs
-import React, { FunctionComponent, Fragment, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
 // ours
@@ -56,7 +56,7 @@ const Search: FunctionComponent<SearchProps> = ({ fetchData }) => {
         id="search"
         type="search"
         placeholder="Search for songs by artist or title"
-        onChange={event => handleInputChange(event.target.value.toLowerCase())}
+        onChange={event => handleInputChange(event.target.value)}
       />
       <Button type="submit" />
     </SearchBox>
