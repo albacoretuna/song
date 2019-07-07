@@ -4,6 +4,7 @@
  **/
 
 // libs
+import React from 'react';
 import styled from 'styled-components';
 
 // ours
@@ -33,20 +34,13 @@ const AppWrapper = styled.div`
   height: 100%;
 `;
 
-const LoadingSpinner = styled.div`
+const LoadingSpinnerElement = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 0 auto;
   color: white;
   padding: 20px;
-  background: url(${SpinnerSvg}) no-repeat 50%;
-  min-height: 100px;
-  position: relative;
-  &:before{
-    content: "Loading...";
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%);
-    bottom: 0
-  }
 `;
 
 const LoadingText = styled.p`
@@ -54,5 +48,11 @@ const LoadingText = styled.p`
   color: white;
 `;
 
-export {Hero, Heading, SubHeading, AppWrapper, LoadingSpinner, LoadingText};
+const LoadingSpinner = () => (
+  <LoadingSpinnerElement>
+    <LoadingText>Loading...</LoadingText>
+    <img src={SpinnerSvg} alt="Loading" />
+  </LoadingSpinnerElement>
+);
 
+export { Hero, Heading, SubHeading, AppWrapper, LoadingSpinner, LoadingText };
