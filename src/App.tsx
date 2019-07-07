@@ -153,8 +153,8 @@ const App: FunctionComponent = () => {
       {/* loading indicator */}
       {loading && (
         <LoadingSpinner>
-          <img src={SpinnerSvg} alt="Loading" />
           <LoadingText>Loading...</LoadingText>
+          <img src={SpinnerSvg} alt="Loading" />
         </LoadingSpinner>
       )}
 
