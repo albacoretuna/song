@@ -11,7 +11,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 
 // ours
 import Search from './Search';
-import Gallery from './Gallery';
+import List from './List';
 import HeroImg from './images/yousician-hero-mobile.png';
 import SpinnerSvg from './images/audio.svg';
 
@@ -136,7 +136,7 @@ const App: FunctionComponent = () => {
           <img src={SpinnerSvg} alt="Loading" />
         </LoadingSpinner>
       ) : (
-        <Gallery songs={data.songs} favorites={favorites} />
+        <List songs={data.songs} favorites={favorites} />
       )}
 
       {/* error handling */}
