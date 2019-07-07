@@ -76,7 +76,7 @@ const App: FunctionComponent = () => {
 
   // read tree data from api and put it into state
   const fetchDataAndSetState = () => {
-    const songsUrl = 'http://localhost:3004/songs?_start=1&_end=3';
+    const songsUrl = 'http://localhost:3004/songs';
 
     axios
       .get(songsUrl)
