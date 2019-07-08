@@ -1,7 +1,7 @@
 // Card component, showing a song detail
 
 // libs
-import React, { FunctionComponent } from 'react';
+import React, { useState, FunctionComponent } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -10,11 +10,16 @@ import { Song, Favorite, favoritesUrl } from './App';
 import LevelIndicator from './LevelIndicator';
 import Colors from './Colors';
 
+// typings for hooks
+type Dispatch<A> = (value: A) => void;
+type SetStateAction<S> = S | ((prevState: S) => S);
 
 type CardProps = {
   song: Song;
   index: number;
   isFavorite: boolean;
+  setFavorites: Dispatch<SetStateAction<Favorite[]>>;
+  favorites: Favorite[];
 };
 
 const Button = styled.button`
@@ -31,18 +36,19 @@ type ListItemProps = {
   index: number;
 };
 
-
-
 const FavoriteButtonElement = styled.button`
   background-color: transparent;
   border: 0;
   display: inline-block;
-  width: 20px;
-  height: 20px;
 `;
 
+type FavoriteIconProps = {
+  favIsLoading: boolean;
+};
 // filled heart
-const FavoriteIcon = () => (
+const FavoriteIcon: FunctionComponent<FavoriteIconProps> = ({
+  favIsLoading
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -52,13 +58,26 @@ const FavoriteIcon = () => (
     <path d="M0 0h24v24H0z" fill="none" />
     <path
       d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-  fill={Colors.MonzaRed}
-    />
+      fill={Colors.MonzaRed}
+    >
+      {' '}
+      {favIsLoading && (
+        <animate
+          attributeType="XML"
+          attributeName="fill"
+          values="#800;#f00;#800;#800"
+          dur="0.8s"
+          repeatCount="indefinite"
+        />
+      )}
+    </path>
   </svg>
 );
 
 // empty heart
-const FavoriteBorderIcon = () => (
+const FavoriteBorderIcon: FunctionComponent<FavoriteIconProps> = ({
+  favIsLoading
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -69,7 +88,17 @@ const FavoriteBorderIcon = () => (
     <path
       d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"
       fill={Colors.Gray}
-    />
+    >
+      {favIsLoading && (
+        <animate
+          attributeType="XML"
+          attributeName="fill"
+          values="#800;#f00;#800;#800"
+          dur="0.8s"
+          repeatCount="indefinite"
+        />
+      )}
+    </path>
   </svg>
 );
 const ListItem = styled.li<ListItemProps>`
@@ -101,27 +130,49 @@ const SubHeading = styled.h2`
   font-weight: 500;
 `;
 
-const Card: FunctionComponent<CardProps> = ({ song, index, isFavorite }) => {
+const Card: FunctionComponent<CardProps> = ({
+  song,
+  index,
+  isFavorite,
+  setFavorites,
+  favorites
+}) => {
+  const [favIsLoading, setFavIsLoading] = useState(false);
+  // toggle favorite and not favorite
   const handleFavoriteButton = (songId: string, isFavorite: boolean) => {
-    if(isFavorite) {
-      axios.get(favoritesUrl).then(({data}) => {
-        const favorite = data.find((favorite:Favorite) => favorite.songId === songId);
+    setFavIsLoading(true);
 
-      axios.delete(favoritesUrl + '/' +favorite.id)
-      .then(({data}) => {
-        console.log('removed from favorites', data)
-      })
-      .catch();
-      })
+    if (isFavorite) {
+      // to un-fave a song
+      const favorite = favorites.find(
+        (favorite: Favorite) => favorite.songId === songId
+      );
+
+      if (!favorite) return;
+
+      axios
+        .delete(favoritesUrl + '/' + favorite.id)
+        .then(({ data }) => {
+          setFavIsLoading(false);
+          // update favorites in state
+          setFavorites(favorites =>
+            favorites.filter(
+              loadedFavorite => favorite.songId !== loadedFavorite.songId
+            )
+          );
+        })
+        .catch();
     } else {
-    axios.post(favoritesUrl, {songId})
-      .then(({data}) => {
-        console.log('Added to favorites')
-      })
-      .catch();
+      // to fave a song
+      axios
+        .post(favoritesUrl, { songId })
+        .then(({ data }) => {
+          setFavorites(favorites => [...favorites, data]);
+          setFavIsLoading(false);
+        })
+        .catch();
     }
-
-  }
+  };
   return (
     <ListItem index={index}>
       <div>
@@ -134,9 +185,17 @@ const Card: FunctionComponent<CardProps> = ({ song, index, isFavorite }) => {
       <div>
         <LevelIndicator level={song.level} />
       </div>
-    <FavoriteButtonElement onClick={() => {handleFavoriteButton(song.id, isFavorite)} }>
-    {isFavorite? <FavoriteIcon /> : <FavoriteBorderIcon />}
-    </FavoriteButtonElement>
+      <FavoriteButtonElement
+        onClick={() => {
+          handleFavoriteButton(song.id, isFavorite);
+        }}
+      >
+        {isFavorite ? (
+          <FavoriteIcon favIsLoading={favIsLoading} />
+        ) : (
+          <FavoriteBorderIcon favIsLoading={favIsLoading} />
+        )}
+      </FavoriteButtonElement>
     </ListItem>
   );
 };

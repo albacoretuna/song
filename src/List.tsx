@@ -21,6 +21,7 @@ type SetStateAction<S> = S | ((prevState: S) => S);
 type ListProps = {
   loadedSongs: Song[];
   favorites: Favorite[];
+  setFavorites: Dispatch<SetStateAction<Favorite[]>>
   setIsFetching: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -36,10 +37,9 @@ const isFavorite = (songId: string, favorites: Favorite[]): boolean => {
 const List: FunctionComponent<ListProps> = ({
   loadedSongs,
   favorites,
+  setFavorites,
   setIsFetching,
 }) => {
-
-
   const handleScroll = () => {
     const isNotEndOfPageYet = window.innerHeight + document.documentElement.scrollTop !==
       document.documentElement.offsetHeight;
@@ -64,6 +64,8 @@ const List: FunctionComponent<ListProps> = ({
           key={song.id}
           index={index}
           isFavorite={isFavorite(song.id, favorites)}
+          setFavorites={setFavorites}
+          favorites={favorites}
         />
       ))}
     </ListWrapper>

@@ -5,7 +5,7 @@
  */
 
 // libs
-import React, { useState, useEffect, useContext, FunctionComponent } from 'react';
+import React, { useState, useEffect, FunctionComponent } from 'react';
 import axios from 'axios';
 
 // ours
@@ -162,6 +162,7 @@ const App: FunctionComponent = () => {
       <List
         loadedSongs={loadedSongs}
         favorites={favorites}
+        setFavorites={setFavorites}
         setIsFetching={setIsFetching}
       />
 
