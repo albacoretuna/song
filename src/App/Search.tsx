@@ -1,6 +1,7 @@
 // libs
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
+import debounce from 'lodash/debounce';
 
 // ours
 import SearchIcon from '../images/icons/search.svg';
@@ -43,7 +44,7 @@ type SearchProps = {
 
 const Search: FunctionComponent<SearchProps> = ({ fetchSongs, searchKeyword, setSearchKeyword }) => {
 
-  const handleInputChange = (inputContent: string) => setSearchKeyword(inputContent);
+  const handleInputChange = debounce((inputContent: string) => setSearchKeyword(inputContent), 800);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
