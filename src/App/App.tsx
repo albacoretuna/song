@@ -29,11 +29,13 @@ export type Song = {
   species_name: string;
   level: number;
 };
+interface ISongsState extends Array<Song> {}
 
 export type Favorite = {
   id: string;
   songId: string;
 };
+interface IFavoritesState extends Array<Favorite> {}
 
 const baseApiUrl = 'http://localhost:3004/';
 
@@ -43,24 +45,15 @@ export const favoritesUrl = `${baseApiUrl}favorites`;
 const pageSize = 20;
 
 const App: FunctionComponent = () => {
-  interface ISongsState extends Array<Song> {}
-  interface IFavoritesState extends Array<Favorite> {}
 
+  // hooks keeping the state
   const [isLoading, setIsLoading] = useState(true);
-
-  // main hook that keeps song data coming from the api
   const [loadedSongs, setLoadedSongs] = useState<ISongsState>([]);
-
   const [favorites, setFavorites] = useState<IFavoritesState>([]);
-
   const [isFetching, setIsFetching] = useState(false);
-
   const [hasMore, setHasMore] = useState(true);
-
-  const [lastSong, setLastSong] = useState(20);
-
+  const [lastSong, setLastSong] = useState(pageSize);
   const [totalSongsCount, setTotalSongsCount] = useState(100);
-
 
   // insert pramas to the url for fetching songs
   const getSongsUrl = (
@@ -129,7 +122,7 @@ const App: FunctionComponent = () => {
 
   useEffect(() => {
     // The initial loading of songs and favorites
-    fetchSongs('');
+    fetchSongs();
    // eslint-disable-next-line
   }, []);
 
@@ -137,7 +130,7 @@ const App: FunctionComponent = () => {
     // handle fetch on scroll for songs
     () => {
       if (!isFetching) return;
-
+      //TODO pass the search keyword here
       fetchMoreSongs('');
     },
      // eslint-disable-next-line
