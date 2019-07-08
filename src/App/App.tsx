@@ -10,8 +10,8 @@ import axios from 'axios';
 
 // ours
 import Search from './Search';
-import List from './List';
-import GlobalStyle from './GlobalStyle';
+import List from './List/List';
+import GlobalStyle from '../style/GlobalStyle';
 import {
   Hero,
   Heading,

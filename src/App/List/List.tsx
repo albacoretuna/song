@@ -3,8 +3,8 @@ import React, { FunctionComponent, useEffect } from 'react';
 import styled from 'styled-components';
 
 // ours
-import { Song, Favorite } from './App';
-import Card from './Card';
+import { Song, Favorite } from '../App';
+import Card from './Card/Card';
 
 const ListWrapper = styled.ul`
   padding: 10px;

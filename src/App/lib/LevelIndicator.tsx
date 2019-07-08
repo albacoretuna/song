@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 // ours
-import Colors from './Colors';
+import Colors from '../../style/Colors';
 
 type LevelIndicatorProps = {
   level: number;

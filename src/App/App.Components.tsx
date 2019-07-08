@@ -8,8 +8,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 // ours
-import HeroImg from './images/yousician-hero-mobile.png';
-import SpinnerSvg from './images/audio.svg';
+import HeroImg from '../images/yousician-hero-mobile.png';
+import SpinnerSvg from '../images/audio.svg';
 
 const Hero = styled.header`
   text-align: center;

@@ -3,7 +3,7 @@ import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
 
 // ours
-import SearchIcon from './images/icons/search.svg';
+import SearchIcon from '../images/icons/search.svg';
 
 const SearchBox = styled.form`
   display: flex;

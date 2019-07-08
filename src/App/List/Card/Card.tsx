@@ -6,9 +6,9 @@ import styled from 'styled-components';
 import axios from 'axios';
 
 // ours
-import { Song, Favorite, favoritesUrl } from './App';
-import LevelIndicator from './LevelIndicator';
-import Colors from './Colors';
+import { Song, Favorite, favoritesUrl } from '../../App';
+import LevelIndicator from '../../lib/LevelIndicator';
+import Colors from '../../../style/Colors';
 
 // typings for hooks
 type Dispatch<A> = (value: A) => void;
