@@ -7,6 +7,7 @@ import Colors from '../../style/Colors';
 
 type LevelIndicatorProps = {
   level: number;
+  selected?: boolean;
 };
 
 const Indicator = styled.svg`
@@ -16,13 +17,17 @@ const Indicator = styled.svg`
 
 const TextGroup = styled.g`
   font: 30px 'Montserrat', Arial, sans-serif;
-  fill: #fff;
   transform: translateY(0.25em);
 `;
 
-const LevelNumber = styled.text`
+type LevelNumberProps= {
+  selected?: boolean
+}
+
+const LevelNumber = styled.text<LevelNumberProps>`
   font-size: 0.6em;
   line-height: 1;
+  fill: ${({selected}) => selected? '#000' : '#fff'};
   text-anchor: middle;
   font-weight: 600;
 `;
@@ -43,7 +48,7 @@ const getColor = (level: number): string => {
 
 // A very informative article about making donut charts:
 // https://medium.com/@heyoka/scratch-made-svg-donut-pie-charts-in-html5-2c587e935d72
-const LevelIndicator: FunctionComponent<LevelIndicatorProps> = ({ level }) => {
+const LevelIndicator: FunctionComponent<LevelIndicatorProps> = ({ level, selected }) => {
 
 const getStrokeDasharray = (level: number) => {
   const maxLevel = 15;
@@ -88,8 +93,9 @@ const getStrokeDasharray = (level: number) => {
         strokeDasharray="3 30"
         strokeDashoffset="59"
       />
-      <TextGroup>
-        <LevelNumber x="50%" y="50%">
+    {selected && <circle cx="21" cy="21" r="20" fill="#fff" />}
+    <TextGroup>
+        <LevelNumber x="50%" y="50%" selected={selected}>
           {level}
         </LevelNumber>
       </TextGroup>

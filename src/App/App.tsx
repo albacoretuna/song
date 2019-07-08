@@ -11,6 +11,7 @@ import axios from 'axios';
 // ours
 import Search from './Search';
 import List from './List/List';
+import Filter from './Filter/Filter';
 import GlobalStyle from '../style/GlobalStyle';
 import {
   Hero,
@@ -150,6 +151,9 @@ const App: FunctionComponent = () => {
         </SubHeading>
         <Search fetchSongs={fetchSongs} />
       </Hero>
+
+      {/* Level filtering */}
+      <Filter level={2}/>
 
       {/* The main song list*/}
       <List
