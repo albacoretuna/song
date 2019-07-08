@@ -5,7 +5,7 @@
  */
 
 // libs
-import React, { useState, useEffect, FunctionComponent } from 'react';
+import React, { useState, useEffect, useContext, FunctionComponent } from 'react';
 import axios from 'axios';
 
 // ours
@@ -46,7 +46,7 @@ const App: FunctionComponent = () => {
   interface ISongsState extends Array<Song> {}
   interface IFavoritesState extends Array<Favorite> {}
 
-  const [isLoading, setIsLading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   // main hook that keeps song data coming from the api
   const [loadedSongs, setLoadedSongs] = useState<ISongsState>([]);
@@ -79,14 +79,14 @@ const App: FunctionComponent = () => {
     start: number = 0,
     end: number = pageSize
   ) => {
-    setIsLading(true);
+    setIsLoading(true);
 
     const songs = axios.get(getSongsUrl(baseApiUrl, start, end, searchTerm));
 
 
     const favorites = axios.get(favoritesUrl);
     Promise.all([songs, favorites]).then(([songs, favorites]) => {
-      setIsLading(false);
+      setIsLoading(false);
       setLoadedSongs(songs.data);
       setTotalSongsCount(songs.headers['x-total-count']);
       setFavorites(favorites.data);
@@ -111,7 +111,7 @@ const App: FunctionComponent = () => {
       setHasMore(false);
     }
 
-    setIsLading(true);
+    setIsLoading(true);
     setLastSong(prevLastSong => prevLastSong + 20);
 
     const songsUrl = `${baseApiUrl}songs?${start ? '_start=' + start : ''}&${
@@ -119,7 +119,7 @@ const App: FunctionComponent = () => {
     }&search_like=${searchTerm}`;
 
     axios.get(songsUrl).then(({ data }) => {
-      setIsLading(false);
+      setIsLoading(false);
 
       // add the fetched songs to the previously loaded songs
       setLoadedSongs(prevSongs => [...prevSongs, ...data]);
