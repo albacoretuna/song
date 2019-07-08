@@ -3,11 +3,13 @@
 // libs
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 // ours
-import { Song } from './App';
+import { Song, Favorite, favoritesUrl } from './App';
 import LevelIndicator from './LevelIndicator';
 import Colors from './Colors';
+
 
 type CardProps = {
   song: Song;
@@ -28,6 +30,16 @@ Button.displayName = 'Button';
 type ListItemProps = {
   index: number;
 };
+
+
+
+const FavoriteButtonElement = styled.button`
+  background-color: transparent;
+  border: 0;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+`;
 
 // filled heart
 const FavoriteIcon = () => (
@@ -60,7 +72,6 @@ const FavoriteBorderIcon = () => (
     />
   </svg>
 );
-
 const ListItem = styled.li<ListItemProps>`
   display: grid;
   grid-template-columns: 1fr 1fr auto auto;
@@ -91,6 +102,26 @@ const SubHeading = styled.h2`
 `;
 
 const Card: FunctionComponent<CardProps> = ({ song, index, isFavorite }) => {
+  const handleFavoriteButton = (songId: string, isFavorite: boolean) => {
+    if(isFavorite) {
+      axios.get(favoritesUrl).then(({data}) => {
+        const favorite = data.find((favorite:Favorite) => favorite.songId === songId);
+
+      axios.delete(favoritesUrl + '/' +favorite.id)
+      .then(({data}) => {
+        console.log('removed from favorites', data)
+      })
+      .catch();
+      })
+    } else {
+    axios.post(favoritesUrl, {songId})
+      .then(({data}) => {
+        console.log('Added to favorites')
+      })
+      .catch();
+    }
+
+  }
   return (
     <ListItem index={index}>
       <div>
@@ -103,7 +134,9 @@ const Card: FunctionComponent<CardProps> = ({ song, index, isFavorite }) => {
       <div>
         <LevelIndicator level={song.level} />
       </div>
-      <div>{isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}</div>
+    <FavoriteButtonElement onClick={() => {handleFavoriteButton(song.id, isFavorite)} }>
+    {isFavorite? <FavoriteIcon /> : <FavoriteBorderIcon />}
+    </FavoriteButtonElement>
     </ListItem>
   );
 };

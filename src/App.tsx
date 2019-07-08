@@ -35,6 +35,13 @@ export type Favorite = {
   songId: string;
 };
 
+const baseApiUrl = 'http://localhost:3004/';
+
+export const favoritesUrl = `${baseApiUrl}favorites`;
+
+// how many songs to load each time
+const pageSize = 20;
+
 const App: FunctionComponent = () => {
   interface ISongsState extends Array<Song> {}
   interface IFavoritesState extends Array<Favorite> {}
@@ -54,10 +61,6 @@ const App: FunctionComponent = () => {
 
   const [totalSongsCount, setTotalSongsCount] = useState(100);
 
-  const baseApiUrl = 'http://localhost:3004/';
-
-  // how many songs to load each time
-  const pageSize = 20;
 
   // insert pramas to the url for fetching songs
   const getSongsUrl = (
@@ -80,7 +83,6 @@ const App: FunctionComponent = () => {
 
     const songs = axios.get(getSongsUrl(baseApiUrl, start, end, searchTerm));
 
-    const favoritesUrl = `${baseApiUrl}favorites`;
 
     const favorites = axios.get(favoritesUrl);
     Promise.all([songs, favorites]).then(([songs, favorites]) => {
