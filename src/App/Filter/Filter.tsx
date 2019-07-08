@@ -59,13 +59,24 @@ const Filter: FunctionComponent<FilterProps> = ({ selectedLevels, setSelectedLev
 
   const toggleOpen = () => setOpen(!open);
 
+  // toggle the clicked level in selectedLevels
+  const handleClick = (level: number) => {
+    setSelectedLevels(levels => {
+      if(levels.includes(level)) {
+        return levels.filter((currentLevels) => currentLevels !== level)
+      } else {
+        return [...levels, level]
+      }
+    } )
+  }
+
   return (
     <FilterElement>
     <DropDownButton onClick={toggleOpen}>{open ? 'HIDE FILTER' : 'FILTER BY LEVEL'}</DropDownButton>
       <Panel open={!open}>
         {/* Create 15 buttons*/}
         {Array.from(Array(maxLevel)).map((level, i) => (
-          <LevelButton key={i}><LevelIndicator level={i} selected={selectedLevels.includes(i)}/></LevelButton>
+          <LevelButton key={i} onClick={() => handleClick(i)}><LevelIndicator level={i} selected={selectedLevels.includes(i)}/></LevelButton>
         ))}
       </Panel>
     </FilterElement>
