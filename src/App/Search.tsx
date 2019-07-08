@@ -44,7 +44,7 @@ type SearchProps = {
 
 const Search: FunctionComponent<SearchProps> = ({ fetchSongs, searchKeyword, setSearchKeyword }) => {
 
-  const handleInputChange = debounce((inputContent: string) => setSearchKeyword(inputContent), 800);
+  const handleInputChange = debounce((inputContent: string) => setSearchKeyword(inputContent), 600);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
