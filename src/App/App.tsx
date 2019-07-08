@@ -27,7 +27,6 @@ export type Song = {
   title: string;
   artist: string;
   images: string;
-  species_name: string;
   level: number;
 };
 interface ISongsState extends Array<Song> {}
@@ -46,7 +45,6 @@ export const favoritesUrl = `${baseApiUrl}favorites`;
 const pageSize = 20;
 
 const App: FunctionComponent = () => {
-
   // hooks keeping the state
   const [isLoading, setIsLoading] = useState(true);
   const [loadedSongs, setLoadedSongs] = useState<ISongsState>([]);
@@ -55,6 +53,7 @@ const App: FunctionComponent = () => {
   const [hasMore, setHasMore] = useState(true);
   const [lastSong, setLastSong] = useState(pageSize);
   const [totalSongsCount, setTotalSongsCount] = useState(100);
+  const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
 
   // insert pramas to the url for fetching songs
   const getSongsUrl = (
@@ -76,7 +75,6 @@ const App: FunctionComponent = () => {
     setIsLoading(true);
 
     const songs = axios.get(getSongsUrl(baseApiUrl, start, end, searchTerm));
-
 
     const favorites = axios.get(favoritesUrl);
     Promise.all([songs, favorites]).then(([songs, favorites]) => {
@@ -124,7 +122,7 @@ const App: FunctionComponent = () => {
   useEffect(() => {
     // The initial loading of songs and favorites
     fetchSongs();
-   // eslint-disable-next-line
+    // eslint-disable-next-line
   }, []);
 
   useEffect(
@@ -134,7 +132,7 @@ const App: FunctionComponent = () => {
       //TODO pass the search keyword here
       fetchMoreSongs('');
     },
-     // eslint-disable-next-line
+    // eslint-disable-next-line
     [isFetching]
   );
 
@@ -153,7 +151,10 @@ const App: FunctionComponent = () => {
       </Hero>
 
       {/* Level filtering */}
-      <Filter level={2}/>
+      <Filter
+        selectedLevels={selectedLevels}
+        setSelectedLevels={setSelectedLevels}
+      />
 
       {/* The main song list*/}
       <List

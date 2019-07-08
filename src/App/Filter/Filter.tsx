@@ -7,9 +7,15 @@ import Colors from '../../style/Colors';
 import LevelIndicator from '../lib/LevelIndicator';
 import { maxLevel } from '../constants';
 
+// typings for hooks
+type Dispatch<A> = (value: A) => void;
+type SetStateAction<S> = S | ((prevState: S) => S);
+
 type FilterProps = {
-  level?: number;
+  selectedLevels: number[]
+  setSelectedLevels: Dispatch<SetStateAction<number[]>>
 };
+
 
 const FilterElement = styled.div`
   display: flex;
@@ -48,7 +54,7 @@ const LevelButton = styled.button`
   color: white;
 `;
 
-const Filter: FunctionComponent<FilterProps> = ({ level }) => {
+const Filter: FunctionComponent<FilterProps> = ({ selectedLevels, setSelectedLevels }) => {
   const [open, setOpen] = useState(false);
 
   const toggleOpen = () => setOpen(!open);
@@ -58,8 +64,8 @@ const Filter: FunctionComponent<FilterProps> = ({ level }) => {
     <DropDownButton onClick={toggleOpen}>{open ? 'HIDE FILTER' : 'FILTER BY LEVEL'}</DropDownButton>
       <Panel open={!open}>
         {/* Create 15 buttons*/}
-        {Array.from(Array(15)).map((level, i) => (
-          <LevelButton key={i}><LevelIndicator level={i} selected={true}/></LevelButton>
+        {Array.from(Array(maxLevel)).map((level, i) => (
+          <LevelButton key={i}><LevelIndicator level={i} selected={selectedLevels.includes(i)}/></LevelButton>
         ))}
       </Panel>
     </FilterElement>
