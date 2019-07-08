@@ -76,7 +76,7 @@ const Filter: FunctionComponent<FilterProps> = ({ selectedLevels, setSelectedLev
       <Panel open={!open}>
         {/* Create 15 buttons*/}
         {Array.from(Array(maxLevel)).map((level, i) => (
-          <LevelButton key={i} onClick={() => handleClick(i)}><LevelIndicator level={i} selected={selectedLevels.includes(i)}/></LevelButton>
+          <LevelButton key={i+1} onClick={() => handleClick(i+1)}><LevelIndicator level={i+1} selected={selectedLevels.includes(i+1)}/></LevelButton>
         ))}
       </Panel>
     </FilterElement>

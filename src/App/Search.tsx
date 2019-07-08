@@ -33,7 +33,7 @@ const Button = styled.button`
 
 
 type SearchProps = {
-  fetchSongs: (searchKeyword?: string, start?: number, end?: number) => void;
+  fetchSongs: (searchKeyword?: string, start?: number, ) => void;
 };
 
 const Search: FunctionComponent<SearchProps> = ({ fetchSongs }) => {

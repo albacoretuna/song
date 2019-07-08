@@ -51,37 +51,54 @@ const App: FunctionComponent = () => {
   const [favorites, setFavorites] = useState<IFavoritesState>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [lastSong, setLastSong] = useState(pageSize);
-  const [totalSongsCount, setTotalSongsCount] = useState(100);
+  const [nextSong, setNextSong] = useState(pageSize);
+  const [totalSongsCount, setTotalSongsCount] = useState(20);
   const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
 
   // insert pramas to the url for fetching songs
   const getSongsUrl = (
     baseApiUrl: string,
     start: number,
-    end: number,
-    searchTerm?: string
-  ) =>
-    `${baseApiUrl}songs?${start ? '_start=' + start : ''}&${
-      end ? '_end=' + end : ''
-    }&${searchTerm ? 'search_like=' + searchTerm : ''}`;
+    searchTerm?: string,
+    levels?: number[]
+  ) => {
 
+
+    return `${baseApiUrl}songs?${start !== undefined ? '_start=' + start : ''}&${
+     '_limit=' + pageSize}&${searchTerm ? 'search_like=' + searchTerm : ''}${
+      levels && levels.length > 0 ? '&level=' + levels.join('&level=') : ''
+    }`;
+  }
+
+
+  //TODO
+  // 30 nextSong:  20 hasMore:  true
+  // Select 3 filters, it should enable scrolling. But it won't
+  //
+  //
+  //
+  //
+  //
   // read songs from api and put it into state, for first load
   const fetchSongs = (
     searchTerm?: string,
     start: number = 0,
-    end: number = pageSize
+    levels?: number[]
   ) => {
     setIsLoading(true);
-
-    const songs = axios.get(getSongsUrl(baseApiUrl, start, end, searchTerm));
+    debugger;
+    const songs = axios.get(
+      getSongsUrl(baseApiUrl, start, searchTerm, selectedLevels)
+    );
 
     const favorites = axios.get(favoritesUrl);
     Promise.all([songs, favorites]).then(([songs, favorites]) => {
       setIsLoading(false);
       setLoadedSongs(songs.data);
       setTotalSongsCount(songs.headers['x-total-count']);
+      console.log(songs.headers['x-total-count']);
       setFavorites(favorites.data);
+      setNextSong(start + pageSize);
     });
   };
 
@@ -89,51 +106,70 @@ const App: FunctionComponent = () => {
   const fetchMoreSongs = (
     searchTerm?: string,
     start: number = 0,
-    end: number = pageSize
+    levels?: number[]
   ) => {
-    if (!hasMore) {
-      return;
-    }
+    if(!hasMore) return;
 
-    start = lastSong;
-    end = lastSong + pageSize;
+    start = nextSong;
+    let end = nextSong + pageSize;
 
     if (end > totalSongsCount) {
-      end = totalSongsCount;
       setHasMore(false);
     }
 
     setIsLoading(true);
-    setLastSong(prevLastSong => prevLastSong + 20);
+    setNextSong(prevNextSong => Math.min(prevNextSong + 20, totalSongsCount));
 
-    const songsUrl = `${baseApiUrl}songs?${start ? '_start=' + start : ''}&${
-      end ? '_end=' + end : ''
-    }&search_like=${searchTerm}`;
+    axios
+      .get(getSongsUrl(baseApiUrl, start, searchTerm, selectedLevels))
+      .then(({ data }) => {
+        setIsLoading(false);
 
-    axios.get(songsUrl).then(({ data }) => {
-      setIsLoading(false);
+        // add the fetched songs to the previously loaded songs
+        setLoadedSongs(prevSongs => [...prevSongs, ...data]);
+        setIsFetching(false);
 
-      // add the fetched songs to the previously loaded songs
-      setLoadedSongs(prevSongs => [...prevSongs, ...data]);
-      setIsFetching(false);
-    });
+
+
+      });
   };
 
-  useEffect(() => {
-    // The initial loading of songs and favorites
-    fetchSongs();
-    // eslint-disable-next-line
-  }, []);
+
+  useEffect(
+    () => {
+      console.log('fetchSongs');
+      // The initial loading of songs and favorites
+      fetchSongs('', undefined, selectedLevels);
+      // eslint-disable-next-line
+    },
+    [selectedLevels]
+  );
+
+  useEffect(
+    () => {
+      console.log('totalSongsCount changed: ', totalSongsCount, 'nextSong: ',  nextSong, 'hasMore: ', hasMore);
+
+      if(nextSong >= totalSongsCount) {
+        console.log('has more turned to false');
+        setHasMore(false);
+        setNextSong(totalSongsCount)
+      } else {
+        console.log('has more turned to true');
+        setHasMore(true);
+      }
+    },
+    [totalSongsCount, nextSong, hasMore]
+  );
 
   useEffect(
     // handle fetch on scroll for songs
     () => {
+      console.log('came to fetchSongs: ', selectedLevels);
       if (!isFetching) return;
       //TODO pass the search keyword here
-      fetchMoreSongs('');
+      fetchMoreSongs('', undefined, selectedLevels);
     },
-    // eslint-disable-next-line
-    [isFetching]
+    [isFetching, selectedLevels]
   );
 
   return (
