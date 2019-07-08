@@ -1,5 +1,5 @@
 // libs
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
 // ours
@@ -31,20 +31,23 @@ const Button = styled.button`
   height: 20px;
 `;
 
+// typings for hooks
+type Dispatch<A> = (value: A) => void;
+type SetStateAction<S> = S | ((prevState: S) => S);
 
 type SearchProps = {
   fetchSongs: (searchKeyword?: string, start?: number, ) => void;
+  searchKeyword: string;
+  setSearchKeyword: Dispatch<SetStateAction<string>>;
 };
 
-const Search: FunctionComponent<SearchProps> = ({ fetchSongs }) => {
-  // hook for the search
-  const [inputContent, setInputContent] = useState('');
+const Search: FunctionComponent<SearchProps> = ({ fetchSongs, searchKeyword, setSearchKeyword }) => {
 
-  const handleInputChange = (inputContent: string) => setInputContent(inputContent);
+  const handleInputChange = (inputContent: string) => setSearchKeyword(inputContent);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    fetchSongs(inputContent);
+    fetchSongs(searchKeyword);
   };
 
   return (

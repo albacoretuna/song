@@ -42,18 +42,30 @@ const baseApiUrl = 'http://localhost:3004/';
 export const favoritesUrl = `${baseApiUrl}favorites`;
 
 // how many songs to load each time
-const pageSize = 20;
+const pageSize = 100;
 
 const App: FunctionComponent = () => {
-  // hooks keeping the state
+
+  // All kinds of hooks!
+  // hook for loading spinner
   const [isLoading, setIsLoading] = useState(true);
+
+  // data store for songs and favorites
   const [loadedSongs, setLoadedSongs] = useState<ISongsState>([]);
   const [favorites, setFavorites] = useState<IFavoritesState>([]);
+
+  // for infinite scrolling
   const [isFetching, setIsFetching] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [nextSong, setNextSong] = useState(pageSize);
-  const [totalSongsCount, setTotalSongsCount] = useState(20);
+  const [totalSongsCount, setTotalSongsCount] = useState(pageSize);
+
+  // for level filtering
   const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
+
+  // for search
+  const [searchKeyword, setSearchKeyword] = useState('');
+
 
   // insert pramas to the url for fetching songs
   const getSongsUrl = (
@@ -118,7 +130,7 @@ const App: FunctionComponent = () => {
     }
 
     setIsLoading(true);
-    setNextSong(prevNextSong => Math.min(prevNextSong + 20, totalSongsCount));
+    setNextSong(prevNextSong => Math.min(prevNextSong + pageSize, totalSongsCount));
 
     axios
       .get(getSongsUrl(baseApiUrl, start, searchTerm, selectedLevels))
@@ -139,7 +151,7 @@ const App: FunctionComponent = () => {
     () => {
       console.log('fetchSongs');
       // The initial loading of songs and favorites
-      fetchSongs('', undefined, selectedLevels);
+      fetchSongs(searchKeyword, undefined, selectedLevels);
       // eslint-disable-next-line
     },
     [selectedLevels]
@@ -167,7 +179,7 @@ const App: FunctionComponent = () => {
       console.log('came to fetchSongs: ', selectedLevels);
       if (!isFetching) return;
       //TODO pass the search keyword here
-      fetchMoreSongs('', undefined, selectedLevels);
+      fetchMoreSongs(searchKeyword, undefined, selectedLevels);
     },
     [isFetching, selectedLevels]
   );
@@ -183,7 +195,7 @@ const App: FunctionComponent = () => {
           Here are the most recent additions to the Yousician App. Start playing
           today!
         </SubHeading>
-        <Search fetchSongs={fetchSongs} />
+        <Search searchKeyword={searchKeyword} setSearchKeyword={setSearchKeyword} fetchSongs={fetchSongs} />
       </Hero>
 
       {/* Level filtering */}
