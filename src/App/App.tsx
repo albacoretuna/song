@@ -6,7 +6,6 @@
 
 // libs
 import React, { useState, useEffect, FunctionComponent } from 'react';
-import axios from 'axios';
 import uniqBy from 'lodash/uniqBy';
 
 // ours
@@ -21,7 +20,7 @@ import {
   AppWrapper,
   LoadingSpinner
 } from './App.Components';
-import { prepareSongsUrl, favoritesUrl, baseApiUrl } from './api';
+import { getSongs, getFavorites, prepareSongsUrl } from './api';
 
 // a single song info in the api response
 export type Song = {
@@ -38,7 +37,6 @@ export type Favorite = {
   songId: string;
 };
 interface IFavoritesState extends Array<Favorite> {}
-
 
 // how many songs to load each time
 const pageSize = 50;
@@ -69,19 +67,15 @@ const App: FunctionComponent = () => {
   // for search
   const [searchKeyword, setSearchKeyword] = useState('');
 
-
   // read songs from api and put it into state, for first load
-  const fetchSongs = (
-    searchTerm?: string,
-    levels?: number[]
-  ) => {
+  const fetchSongs = (searchTerm?: string, levels?: number[]) => {
     let start = 0;
     setIsLoading(true);
-    const songs = axios.get(
-      prepareSongsUrl(baseApiUrl, start, pageSize, searchTerm, selectedLevels)
+    const songs = getSongs(
+      prepareSongsUrl(start, pageSize, searchTerm, selectedLevels)
     );
 
-    const favorites = axios.get(favoritesUrl);
+    const favorites = getFavorites();
     Promise.all([songs, favorites]).then(([songs, favorites]) => {
       setIsLoading(false);
       setLoadedSongs(songs.data);
@@ -93,13 +87,10 @@ const App: FunctionComponent = () => {
   };
 
   // Infinite scrolling
-  const fetchMoreSongs = (
-    searchTerm?: string,
-    levels?: number[]
-  ) => {
+  const fetchMoreSongs = (searchTerm?: string, levels?: number[]) => {
     if (!hasMore) return;
 
-    if ( nextSong + pageSize > totalSongsCount) {
+    if (nextSong + pageSize > totalSongsCount) {
       setHasMore(false);
     }
 
@@ -109,15 +100,15 @@ const App: FunctionComponent = () => {
       Math.min(prevNextSong + pageSize, totalSongsCount)
     );
 
-    axios
-      .get(prepareSongsUrl(baseApiUrl, nextSong, pageSize,searchTerm, selectedLevels))
-      .then(({ data }) => {
-        setIsLoading(false);
+    getSongs(
+      prepareSongsUrl(nextSong, pageSize, searchTerm, selectedLevels)
+    ).then(({ data }) => {
+      setIsLoading(false);
 
-        // add the fetched songs to the previously loaded songs
-        setLoadedSongs(prevSongs => [...prevSongs, ...data]);
-        setIsFetching(false);
-      });
+      // add the fetched songs to the previously loaded songs
+      setLoadedSongs(prevSongs => [...prevSongs, ...data]);
+      setIsFetching(false);
+    });
   };
 
   useEffect(
@@ -143,7 +134,7 @@ const App: FunctionComponent = () => {
   );
 
   useEffect(
-    // handle songs fetch on scroll
+    // handle fetching songs on scroll
     () => {
       if (!isFetching) return;
       fetchMoreSongs(searchKeyword, selectedLevels);

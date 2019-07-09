@@ -2,14 +2,21 @@
 
 // libs
 import React, { useState, FunctionComponent } from 'react';
-import axios from 'axios';
 
 // ours
 import { Song, Favorite } from '../../App';
-import { favoritesUrl } from '../../api';
+import { addSongToFavorites, removeSongFromFavorites } from '../../api';
 import LevelIndicator from '../../lib/LevelIndicator';
 
-import { FavoriteButtonElement, SubHeading, Heading, Photo, ListItem, FavoriteIcon, FavoriteBorderIcon } from './Card.Components';
+import {
+  FavoriteButtonElement,
+  SubHeading,
+  Heading,
+  Photo,
+  ListItem,
+  FavoriteIcon,
+  FavoriteBorderIcon
+} from './Card.Components';
 
 // typings for hooks
 type Dispatch<A> = (value: A) => void;
@@ -22,8 +29,6 @@ type CardProps = {
   setFavorites: Dispatch<SetStateAction<Favorite[]>>;
   favorites: Favorite[];
 };
-
-
 
 const Card: FunctionComponent<CardProps> = ({
   song,
@@ -46,9 +51,7 @@ const Card: FunctionComponent<CardProps> = ({
 
       if (!favorite) return;
 
-      axios
-        .delete(favoritesUrl + '/' + favorite.id)
-        .then(({ data }) => {
+        removeSongFromFavorites(favorite.id).then(({ data }) => {
           setFavIsLoading(false);
           // update favorites in state
           setFavorites(favorites =>
@@ -57,17 +60,22 @@ const Card: FunctionComponent<CardProps> = ({
             )
           );
         })
-        .catch();
+        .catch(() => {
+          // TODO add proper UI error messages
+          console.error('Failed to delete the song from favorites');
+        });
     } else {
       // to fave a song
-      axios
-        .post(favoritesUrl, { songId })
+      addSongToFavorites({ songId })
         .then(({ data }) => {
           // put updated list of favorites in state
           setFavorites(favorites => [...favorites, data]);
           setFavIsLoading(false);
         })
-        .catch();
+        .catch(() => {
+          // TODO add proper UI error messages
+          console.error('Failed to add the song to favorites');
+        });
     }
   };
   return (
