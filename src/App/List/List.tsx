@@ -40,6 +40,7 @@ const List: FunctionComponent<ListProps> = ({
   setFavorites,
   setIsFetching,
 }) => {
+  // infinite scrolling handlers
   const handleScroll = () => {
     const isNotEndOfPageYet = window.innerHeight + document.documentElement.scrollTop !==
       document.documentElement.offsetHeight;

@@ -18,7 +18,8 @@ import {
   Heading,
   SubHeading,
   AppWrapper,
-  LoadingSpinner
+  LoadingSpinner,
+  NoSongsFound
 } from './App.Components';
 import { getSongs, getFavorites, prepareSongsUrl } from './api';
 
@@ -36,6 +37,9 @@ export type Favorite = {
   id: string;
   songId: string;
 };
+
+
+
 interface IFavoritesState extends Array<Favorite> {}
 
 // how many songs to load each time
@@ -168,12 +172,15 @@ const App: FunctionComponent = () => {
       />
 
       {/* The main song list*/}
-      <List
+      {loadedSongs.length === 0 && !isLoading
+          ?<NoSongsFound>We found no songs, search again with different words</NoSongsFound>
+          : <List
         loadedSongs={uniqBy(loadedSongs, 'id')}
         favorites={favorites}
         setFavorites={setFavorites}
         setIsFetching={setIsFetching}
       />
+      }
 
       {/* spinner */}
       {isLoading && <LoadingSpinner />}

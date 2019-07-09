@@ -9,28 +9,36 @@ const axiosInstance = axios.create({
   timeout: 1000
 });
 
+// credit https://stackoverflow.com/a/9310752
+// Without this searching for a "?" would break backend :D
+const escapeRegExp = (text: string) =>
+  text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+
 // prepares the url for fetching songs
 const prepareSongsUrl = (
   start: number,
+  // how many songs to request each time
   pageSize: number,
   searchTerm?: string,
+  // filtering by level
   levels?: number[]
 ) => {
   return `songs?${start !== undefined ? '_start=' + start : ''}&${'_limit=' +
-    pageSize}&${searchTerm ? 'search_like=' + searchTerm : ''}${
-    levels && levels.length > 0 ? '&level=' + levels.join('&level=') : ''
-  }`;
+    pageSize}&${
+    searchTerm
+      ? 'search_like=' + encodeURIComponent(escapeRegExp(searchTerm))
+      : ''
+  }${levels && levels.length > 0 ? '&level=' + levels.join('&level=') : ''}`;
 };
 
-const removeSongFromFavorites = (favoriteId: string) => {
-  return axiosInstance.delete(favoritesUrl + '/' + favoriteId);
-};
+const removeSongFromFavorites = (favoriteId: string) =>
+  axiosInstance.delete(favoritesUrl + '/' + favoriteId);
+
 type addSongToFavoritesPayload = {
-  songId: string
-}
-const addSongToFavorites = (songId: addSongToFavoritesPayload) => {
-  return axiosInstance.post(favoritesUrl, { songId });
+  songId: string;
 };
+const addSongToFavorites = (songId: addSongToFavoritesPayload) =>
+  axiosInstance.post(favoritesUrl, { songId });
 
 const getSongs = (url: string) => axiosInstance.get(url);
 const getFavorites = () => axiosInstance.get(favoritesUrl);

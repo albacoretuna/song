@@ -53,6 +53,12 @@ const LoadingText = styled.p`
   color: white;
 `;
 
+const NoSongsFound = styled.div`
+  color: white;
+  text-align: center;
+  margin: 20px 20px
+`;
+
 const LoadingSpinner = () => (
   <LoadingSpinnerElement>
     <LoadingText>Loading...</LoadingText>
@@ -60,4 +66,4 @@ const LoadingSpinner = () => (
   </LoadingSpinnerElement>
 );
 
-export { Hero, Heading, SubHeading, AppWrapper, LoadingSpinner, LoadingText };
+export { Hero, Heading, SubHeading, AppWrapper, LoadingSpinner, LoadingText, NoSongsFound };
