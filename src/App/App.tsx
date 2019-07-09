@@ -19,7 +19,8 @@ import {
   SubHeading,
   AppWrapper,
   LoadingSpinner,
-  NoSongsFound
+  NoSongsFound,
+  Footer
 } from './App.Components';
 import { getSongs, getFavorites, prepareSongsUrl } from './api';
 
@@ -37,8 +38,6 @@ export type Favorite = {
   id: string;
   songId: string;
 };
-
-
 
 interface IFavoritesState extends Array<Favorite> {}
 
@@ -148,43 +147,51 @@ const App: FunctionComponent = () => {
   );
 
   return (
-    <AppWrapper>
-      <GlobalStyle />
+    <>
+      <AppWrapper>
+        <GlobalStyle />
 
-      {/* Search and hero */}
-      <Hero>
-        <Heading>NEW SONGS DELIVERED EVERY WEEK</Heading>
-        <SubHeading>
-          Here are the most recent additions to the Yousician App. Start playing
-          today!
-        </SubHeading>
-        <Search
-          searchKeyword={searchKeyword}
-          setSearchKeyword={setSearchKeyword}
-          fetchSongs={fetchSongs}
+        {/* Search and hero */}
+        <Hero>
+          <Heading>NEW SONGS DELIVERED EVERY WEEK</Heading>
+          <SubHeading>
+            Here are the most recent additions to the Yousician App. Start
+            playing today!
+          </SubHeading>
+          <Search
+            searchKeyword={searchKeyword}
+            setSearchKeyword={setSearchKeyword}
+            fetchSongs={fetchSongs}
+          />
+        </Hero>
+
+        {/* Level filtering */}
+        <Filter
+          selectedLevels={selectedLevels}
+          setSelectedLevels={setSelectedLevels}
         />
-      </Hero>
 
-      {/* Level filtering */}
-      <Filter
-        selectedLevels={selectedLevels}
-        setSelectedLevels={setSelectedLevels}
-      />
+        {/* The main song list*/}
+        {loadedSongs.length === 0 && !isLoading ? (
+          <NoSongsFound data-testid="NoSongsFound">
+            We found no songs, search again with different words
+          </NoSongsFound>
+        ) : (
+          <List
+            loadedSongs={uniqBy(loadedSongs, 'id')}
+            favorites={favorites}
+            setFavorites={setFavorites}
+            setIsFetching={setIsFetching}
+          />
+        )}
 
-      {/* The main song list*/}
-      {loadedSongs.length === 0 && !isLoading
-          ?<NoSongsFound data-testid="NoSongsFound">We found no songs, search again with different words</NoSongsFound>
-          : <List
-        loadedSongs={uniqBy(loadedSongs, 'id')}
-        favorites={favorites}
-        setFavorites={setFavorites}
-        setIsFetching={setIsFetching}
-      />
-      }
-
-      {/* spinner */}
-      {isLoading && <LoadingSpinner />}
-    </AppWrapper>
+        {/* spinner */}
+        {isLoading && <LoadingSpinner />}
+      </AppWrapper>
+      <Footer data-testid="FooterComponent">
+         CopyLeft 2019. Make music, not war.
+      </Footer>
+    </>
   );
 };
 

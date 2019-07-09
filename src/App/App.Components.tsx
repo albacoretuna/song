@@ -30,8 +30,17 @@ const SubHeading = styled.h2`
   font-weight: 400;
 `;
 
+// Sticky footer 2019 edition, using grids!
 const AppWrapper = styled.div`
-  height: 100%;
+  min-height: calc(100vh - 70px);
+`;
+
+const Footer = styled.footer`
+  margin-top: 10px;
+  font-size: 12px;
+  color: white;
+  text-align: center;
+  height: 50px;
 `;
 
 const LoadingSpinnerElement = styled.div`
@@ -56,7 +65,7 @@ const LoadingText = styled.p`
 const NoSongsFound = styled.div`
   color: white;
   text-align: center;
-  margin: 20px 20px
+  margin: 20px 20px;
 `;
 
 const LoadingSpinner = () => (
@@ -66,4 +75,15 @@ const LoadingSpinner = () => (
   </LoadingSpinnerElement>
 );
 
-export { Hero, Heading, SubHeading, AppWrapper, LoadingSpinner, LoadingText, NoSongsFound };
+
+
+export {
+  Hero,
+  Heading,
+  SubHeading,
+  AppWrapper,
+  LoadingSpinner,
+  LoadingText,
+  NoSongsFound,
+  Footer
+};

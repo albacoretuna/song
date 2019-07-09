@@ -9,12 +9,14 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    height: 100%;
-    width: 100%;
     background: black;
   }
   * {
     font-family: 'Montserrat', sans-serif;
+   }
+
+   div#root {
+     min-height: 100%;
    }
 `;
 

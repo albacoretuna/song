@@ -91,6 +91,7 @@ const Card: FunctionComponent<CardProps> = ({
         <LevelIndicator level={song.level} />
       </div>
       <FavoriteButtonElement
+        data-testid={isFavorite ? "FavoriteButton" : "UnFavoriteButton"}
         onClick={() => {
           handleFavoriteButton(song.id, isFavorite);
         }}
@@ -98,7 +99,7 @@ const Card: FunctionComponent<CardProps> = ({
         {isFavorite ? (
           <FavoriteIcon favIsLoading={favIsLoading} />
         ) : (
-          <FavoriteBorderIcon favIsLoading={favIsLoading} />
+          <FavoriteBorderIcon favIsLoading={favIsLoading} data-testid="UnFavoriteButton" />
         )}
       </FavoriteButtonElement>
     </ListItem>

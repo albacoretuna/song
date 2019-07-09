@@ -95,7 +95,7 @@ const getStrokeDasharray = (level: number) => {
       />
     {selected && <circle cx="21" cy="21" r="20" fill="#fff" />}
     <TextGroup>
-        <LevelNumber x="50%" y="50%" selected={selected}>
+        <LevelNumber x="50%" y="50%" selected={selected} data-testid="FilterLevelNumber">
           {level}
         </LevelNumber>
       </TextGroup>

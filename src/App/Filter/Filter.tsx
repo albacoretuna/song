@@ -48,8 +48,8 @@ const Filter: FunctionComponent<FilterProps> = ({
 
   return (
     <FilterElement>
-      <DropDownButton onClick={toggleOpen}>
-        <FilterButton isOpen={isOpen} selectedLevels={selectedLevels} />
+      <DropDownButton onClick={toggleOpen} data-testid="FilterButton">
+        <FilterButton isOpen={isOpen} selectedLevels={selectedLevels}/>
       </DropDownButton>
       <Panel isOpen={isOpen}>
         {/* Create 15 buttons*/}
