@@ -1,3 +1,4 @@
+/*eslint no-undef: 0*/
 /**
  * End to end testing using cypress
  * first run the app and then npm run cypres:open
