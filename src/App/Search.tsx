@@ -37,14 +37,14 @@ type Dispatch<A> = (value: A) => void;
 type SetStateAction<S> = S | ((prevState: S) => S);
 
 type SearchProps = {
-  fetchSongs: (searchKeyword?: string, start?: number, ) => void;
+  fetchSongs: (searchKeyword?: string, levels?: number[]) => void;
   searchKeyword: string;
   setSearchKeyword: Dispatch<SetStateAction<string>>;
 };
 
 const Search: FunctionComponent<SearchProps> = ({ fetchSongs, searchKeyword, setSearchKeyword }) => {
 
-  const handleInputChange = debounce((inputContent: string) => setSearchKeyword(inputContent), 600);
+  const handleInputChange = debounce((inputContent: string) => setSearchKeyword(inputContent), 300);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

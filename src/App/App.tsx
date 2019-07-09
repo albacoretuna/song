@@ -7,6 +7,7 @@
 // libs
 import React, { useState, useEffect, FunctionComponent } from 'react';
 import axios from 'axios';
+import uniqBy from 'lodash/uniqBy';
 
 // ours
 import Search from './Search';
@@ -45,7 +46,6 @@ export const favoritesUrl = `${baseApiUrl}favorites`;
 const pageSize = 100;
 
 const App: FunctionComponent = () => {
-
   // All kinds of hooks!
   // hook for loading spinner
   const [isLoading, setIsLoading] = useState(true);
@@ -66,7 +66,6 @@ const App: FunctionComponent = () => {
   // for search
   const [searchKeyword, setSearchKeyword] = useState('');
 
-
   // insert pramas to the url for fetching songs
   const getSongsUrl = (
     baseApiUrl: string,
@@ -74,31 +73,20 @@ const App: FunctionComponent = () => {
     searchTerm?: string,
     levels?: number[]
   ) => {
-
-
-    return `${baseApiUrl}songs?${start !== undefined ? '_start=' + start : ''}&${
-     '_limit=' + pageSize}&${searchTerm ? 'search_like=' + searchTerm : ''}${
+    return `${baseApiUrl}songs?${
+      start !== undefined ? '_start=' + start : ''
+    }&${'_limit=' + pageSize}&${searchTerm ? 'search_like=' + searchTerm : ''}${
       levels && levels.length > 0 ? '&level=' + levels.join('&level=') : ''
     }`;
-  }
+  };
 
-
-  //TODO
-  // 30 nextSong:  20 hasMore:  true
-  // Select 3 filters, it should enable scrolling. But it won't
-  //
-  //
-  //
-  //
-  //
   // read songs from api and put it into state, for first load
   const fetchSongs = (
     searchTerm?: string,
-    start: number = 0,
     levels?: number[]
   ) => {
+    let start = 0;
     setIsLoading(true);
-    debugger;
     const songs = axios.get(
       getSongsUrl(baseApiUrl, start, searchTerm, selectedLevels)
     );
@@ -108,7 +96,6 @@ const App: FunctionComponent = () => {
       setIsLoading(false);
       setLoadedSongs(songs.data);
       setTotalSongsCount(songs.headers['x-total-count']);
-      console.log(songs.headers['x-total-count']);
       setFavorites(favorites.data);
       setNextSong(start + pageSize);
     });
@@ -117,12 +104,11 @@ const App: FunctionComponent = () => {
   // For infinite scrolling
   const fetchMoreSongs = (
     searchTerm?: string,
-    start: number = 0,
     levels?: number[]
   ) => {
-    if(!hasMore) return;
+    if (!hasMore) return;
 
-    start = nextSong;
+    let start = nextSong;
     let end = nextSong + pageSize;
 
     if (end > totalSongsCount) {
@@ -130,7 +116,9 @@ const App: FunctionComponent = () => {
     }
 
     setIsLoading(true);
-    setNextSong(prevNextSong => Math.min(prevNextSong + pageSize, totalSongsCount));
+    setNextSong(prevNextSong =>
+      Math.min(prevNextSong + pageSize, totalSongsCount)
+    );
 
     axios
       .get(getSongsUrl(baseApiUrl, start, searchTerm, selectedLevels))
@@ -140,47 +128,38 @@ const App: FunctionComponent = () => {
         // add the fetched songs to the previously loaded songs
         setLoadedSongs(prevSongs => [...prevSongs, ...data]);
         setIsFetching(false);
-
-
-
       });
   };
 
-
   useEffect(
     () => {
-      console.log('fetchSongs');
       // The initial loading of songs and favorites
-      fetchSongs(searchKeyword, undefined, selectedLevels);
-      // eslint-disable-next-line
+      fetchSongs(searchKeyword, selectedLevels);
     },
+    // eslint-disable-next-line
     [selectedLevels]
   );
 
   useEffect(
     () => {
-      console.log('totalSongsCount changed: ', totalSongsCount, 'nextSong: ',  nextSong, 'hasMore: ', hasMore);
-
-      if(nextSong >= totalSongsCount) {
-        console.log('has more turned to false');
+      if (nextSong >= totalSongsCount) {
         setHasMore(false);
-        setNextSong(totalSongsCount)
+        setNextSong(totalSongsCount);
       } else {
-        console.log('has more turned to true');
         setHasMore(true);
       }
     },
+    // eslint-disable-next-line
     [totalSongsCount, nextSong, hasMore]
   );
 
   useEffect(
     // handle fetch on scroll for songs
     () => {
-      console.log('came to fetchSongs: ', selectedLevels);
       if (!isFetching) return;
-      //TODO pass the search keyword here
-      fetchMoreSongs(searchKeyword, undefined, selectedLevels);
+      fetchMoreSongs(searchKeyword, selectedLevels);
     },
+    // eslint-disable-next-line
     [isFetching, selectedLevels]
   );
 
@@ -195,7 +174,11 @@ const App: FunctionComponent = () => {
           Here are the most recent additions to the Yousician App. Start playing
           today!
         </SubHeading>
-        <Search searchKeyword={searchKeyword} setSearchKeyword={setSearchKeyword} fetchSongs={fetchSongs} />
+        <Search
+          searchKeyword={searchKeyword}
+          setSearchKeyword={setSearchKeyword}
+          fetchSongs={fetchSongs}
+        />
       </Hero>
 
       {/* Level filtering */}
@@ -206,7 +189,7 @@ const App: FunctionComponent = () => {
 
       {/* The main song list*/}
       <List
-        loadedSongs={loadedSongs}
+        loadedSongs={uniqBy(loadedSongs, 'id')}
         favorites={favorites}
         setFavorites={setFavorites}
         setIsFetching={setIsFetching}
