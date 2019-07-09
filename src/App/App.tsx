@@ -173,7 +173,7 @@ const App: FunctionComponent = () => {
 
       {/* The main song list*/}
       {loadedSongs.length === 0 && !isLoading
-          ?<NoSongsFound>We found no songs, search again with different words</NoSongsFound>
+          ?<NoSongsFound data-testid="NoSongsFound">We found no songs, search again with different words</NoSongsFound>
           : <List
         loadedSongs={uniqBy(loadedSongs, 'id')}
         favorites={favorites}

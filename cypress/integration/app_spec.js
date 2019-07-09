@@ -1,23 +1,24 @@
 /**
  * End to end testing using cypress
- * first run the app and then yarn run cypres:open
+ * first run the app and then npm run cypres:open
  */
-describe('Testing Tremendous App', function() {
-  it('Clicking on show button opens image', function() {
+describe('Testing Song List App', function() {
+  it('Shows a list of songs', function() {
     cy.visit('/');
-    cy.contains('Show Photo').click();
-    cy.get('li img').should('have.css', 'max-height', '500px');
+    cy.get('[data-testid=list-component-songs] li').should('exist');
   })
 
-  it('Searching for a none-existent tree returns no tree', function() {
+  it('Typing a none-existent song in search input and pressing enter, shows the not found text', function() {
     cy.visit('/')
-    cy.get('input#search').type('Blah');
-    cy.get('ul').find('li').should('not.exist');
+    cy.get('[data-testid=SearchComponentInputBox]').type('BlahBlahNoOneWillHaveThisSongTitleOrThisNameYeahSure{enter}');
+    cy.wait(500);
+    cy.get('[data-testid=NoSongsFound]').should('exist');
   })
 
-  it('Searching for Baobab returns Baobab', function() {
+  it('Searching for "Love" returns some songs', function() {
     cy.visit('/')
-    cy.get('input#search').type('Baobab');
-    cy.get('ul').find('li').should('contain','Baobab');
+    cy.get('[data-testid=SearchComponentInputBox]').type('Love');
+    cy.get('[data-testid=SearchSubmitButton]').click();
+    cy.get('[data-testid=list-component-songs] li').should('contain', 'Love');
   })
   })

@@ -43,8 +43,9 @@ type SearchProps = {
 };
 
 const Search: FunctionComponent<SearchProps> = ({ fetchSongs, searchKeyword, setSearchKeyword }) => {
-
-  const handleInputChange = debounce((inputContent: string) => setSearchKeyword(inputContent), 300);
+  // in milliseconds, the magic number came from https://stackoverflow.com/a/44755058/3994190
+  const waitForUserToStopTyping = 275;
+  const handleInputChange = debounce((inputContent: string) => setSearchKeyword(inputContent), waitForUserToStopTyping);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -54,12 +55,13 @@ const Search: FunctionComponent<SearchProps> = ({ fetchSongs, searchKeyword, set
   return (
     <SearchBox onSubmit={handleSubmit}>
       <Input
+        data-testid="SearchComponentInputBox"
         id="search"
         type="search"
         placeholder="Search for songs by artist or title"
         onChange={event => handleInputChange(event.target.value)}
       />
-      <Button type="submit" />
+      <Button type="submit" data-testid="SearchSubmitButton" />
     </SearchBox>
   );
 };

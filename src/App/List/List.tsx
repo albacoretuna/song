@@ -38,7 +38,7 @@ const List: FunctionComponent<ListProps> = ({
   loadedSongs,
   favorites,
   setFavorites,
-  setIsFetching,
+  setIsFetching
 }) => {
   // infinite scrolling handlers
   const handleScroll = () => {
@@ -56,7 +56,7 @@ const List: FunctionComponent<ListProps> = ({
   });
 
   return (
-    <ListWrapper>
+    <ListWrapper data-testid="list-component-songs">
       {loadedSongs.map((song: Song, index: number) => (
         <Card
           song={song}
