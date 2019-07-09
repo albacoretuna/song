@@ -44,9 +44,7 @@ const List: FunctionComponent<ListProps> = ({
     const isNotEndOfPageYet = window.innerHeight + document.documentElement.scrollTop !==
       document.documentElement.offsetHeight;
     if (isNotEndOfPageYet) return;
-   console.log('handle scroll fired, set fetching should be changed now');
     setIsFetching(true);
-
   };
 
   useEffect(() => {

@@ -36,7 +36,7 @@ const AppWrapper = styled.div`
 
 const LoadingSpinnerElement = styled.div`
   position: fixed;
-  background: rgba(59, 191, 208, 0.8);
+  background: rgba(0, 0, 0, 0.5);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

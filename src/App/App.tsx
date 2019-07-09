@@ -101,27 +101,25 @@ const App: FunctionComponent = () => {
     });
   };
 
-  // For infinite scrolling
+  // Infinite scrolling
   const fetchMoreSongs = (
     searchTerm?: string,
     levels?: number[]
   ) => {
     if (!hasMore) return;
 
-    let start = nextSong;
-    let end = nextSong + pageSize;
-
-    if (end > totalSongsCount) {
+    if (nextSong + pageSize > totalSongsCount) {
       setHasMore(false);
     }
 
     setIsLoading(true);
+
     setNextSong(prevNextSong =>
       Math.min(prevNextSong + pageSize, totalSongsCount)
     );
 
     axios
-      .get(getSongsUrl(baseApiUrl, start, searchTerm, selectedLevels))
+      .get(getSongsUrl(baseApiUrl, nextSong, searchTerm, selectedLevels))
       .then(({ data }) => {
         setIsLoading(false);
 
