@@ -21,6 +21,7 @@ import {
   AppWrapper,
   LoadingSpinner
 } from './App.Components';
+import { prepareSongsUrl, favoritesUrl, baseApiUrl } from './api';
 
 // a single song info in the api response
 export type Song = {
@@ -38,47 +39,36 @@ export type Favorite = {
 };
 interface IFavoritesState extends Array<Favorite> {}
 
-const baseApiUrl = 'http://localhost:3004/';
-
-export const favoritesUrl = `${baseApiUrl}favorites`;
 
 // how many songs to load each time
 const pageSize = 50;
 
 const App: FunctionComponent = () => {
   // All kinds of hooks!
+  //
   // hook for loading spinner
   const [isLoading, setIsLoading] = useState(true);
 
   // data store for songs and favorites
+  //
   const [loadedSongs, setLoadedSongs] = useState<ISongsState>([]);
   const [favorites, setFavorites] = useState<IFavoritesState>([]);
 
-  // for infinite scrolling
+  // infinite scrolling
+  //
   const [isFetching, setIsFetching] = useState(false);
+  // is there songs to fetch from Api more?
   const [hasMore, setHasMore] = useState(true);
   const [nextSong, setNextSong] = useState(pageSize);
   const [totalSongsCount, setTotalSongsCount] = useState(pageSize);
+  //----------
 
-  // for level filtering
+  // level filtering
   const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
 
   // for search
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  // insert pramas to the url for fetching songs
-  const getSongsUrl = (
-    baseApiUrl: string,
-    start: number,
-    searchTerm?: string,
-    levels?: number[]
-  ) => {
-    return `${baseApiUrl}songs?${
-      start !== undefined ? '_start=' + start : ''
-    }&${'_limit=' + pageSize}&${searchTerm ? 'search_like=' + searchTerm : ''}${
-      levels && levels.length > 0 ? '&level=' + levels.join('&level=') : ''
-    }`;
-  };
 
   // read songs from api and put it into state, for first load
   const fetchSongs = (
@@ -88,13 +78,14 @@ const App: FunctionComponent = () => {
     let start = 0;
     setIsLoading(true);
     const songs = axios.get(
-      getSongsUrl(baseApiUrl, start, searchTerm, selectedLevels)
+      prepareSongsUrl(baseApiUrl, start, pageSize, searchTerm, selectedLevels)
     );
 
     const favorites = axios.get(favoritesUrl);
     Promise.all([songs, favorites]).then(([songs, favorites]) => {
       setIsLoading(false);
       setLoadedSongs(songs.data);
+      // get total number of songs database holds
       setTotalSongsCount(songs.headers['x-total-count']);
       setFavorites(favorites.data);
       setNextSong(start + pageSize);
@@ -108,7 +99,7 @@ const App: FunctionComponent = () => {
   ) => {
     if (!hasMore) return;
 
-    if (nextSong + pageSize > totalSongsCount) {
+    if ( nextSong + pageSize > totalSongsCount) {
       setHasMore(false);
     }
 
@@ -119,7 +110,7 @@ const App: FunctionComponent = () => {
     );
 
     axios
-      .get(getSongsUrl(baseApiUrl, nextSong, searchTerm, selectedLevels))
+      .get(prepareSongsUrl(baseApiUrl, nextSong, pageSize,searchTerm, selectedLevels))
       .then(({ data }) => {
         setIsLoading(false);
 
@@ -152,7 +143,7 @@ const App: FunctionComponent = () => {
   );
 
   useEffect(
-    // handle fetch on scroll for songs
+    // handle songs fetch on scroll
     () => {
       if (!isFetching) return;
       fetchMoreSongs(searchKeyword, selectedLevels);
