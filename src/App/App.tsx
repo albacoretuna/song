@@ -43,7 +43,7 @@ const baseApiUrl = 'http://localhost:3004/';
 export const favoritesUrl = `${baseApiUrl}favorites`;
 
 // how many songs to load each time
-const pageSize = 100;
+const pageSize = 50;
 
 const App: FunctionComponent = () => {
   // All kinds of hooks!

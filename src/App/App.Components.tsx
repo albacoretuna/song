@@ -35,6 +35,11 @@ const AppWrapper = styled.div`
 `;
 
 const LoadingSpinnerElement = styled.div`
+  position: fixed;
+  background: rgba(59, 191, 208, 0.8);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
