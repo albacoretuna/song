@@ -12,7 +12,7 @@ import {
   FavoriteButtonElement,
   SubHeading,
   Heading,
-  Photo,
+  ImgWithFallback,
   ListItem,
   FavoriteIcon,
   FavoriteBorderIcon
@@ -81,7 +81,7 @@ const Card: FunctionComponent<CardProps> = ({
   return (
     <ListItem index={index}>
       <div>
-        <Photo src={song.images} alt={song.title} />
+        <ImgWithFallback src={song.images} alt={song.title} />
       </div>
       <div>
         <Heading>{song.title}</Heading>

@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 // ours
 import Colors from '../../../style/Colors';
+import PlaceholderForBorkenImages from '../../../images/placeholder-for-broken-cover-photos.png';
 
 const FavoriteButtonElement = styled.button`
   background-color: transparent;
@@ -91,10 +92,28 @@ const ListItem = styled.li<ListItemProps>`
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
 `;
 
-const Photo = styled.img`
+const Img = styled.img`
   display: inline-block;
   max-width: 90%;
 `;
+
+type ImgWithFallbackProps = {
+  src: string;
+  alt: string;
+};
+
+const ImgWithFallback:FunctionComponent<ImgWithFallbackProps> = ({src, alt}) => {
+  const addDefaultSrc = (event: any) => {
+    if(event && event.target) {
+      event.target.src = PlaceholderForBorkenImages;
+      // TODO optionally we send an error report to our error tracking system,
+      // to find out about broken image links
+    }
+  }
+
+  return <Img  src={src} alt={alt} onError={addDefaultSrc} />
+
+}
 
 const Heading = styled.h1`
   font-size: 14px;
@@ -111,7 +130,7 @@ export {
   FavoriteButtonElement,
   SubHeading,
   Heading,
-  Photo,
+  ImgWithFallback,
   ListItem,
   FavoriteIcon,
   FavoriteBorderIcon
