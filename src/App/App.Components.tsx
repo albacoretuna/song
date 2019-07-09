@@ -8,16 +8,36 @@ import React from 'react';
 import styled from 'styled-components';
 
 // ours
-import HeroImg from '../images/yousician-hero-mobile.png';
+import HeroImgMobile from '../images/yousician-hero-mobile.png';
+import HeroImgMobile2X from '../images/yousician-hero-mobile@2x.png';
+import HeroImgMobile3X from '../images/yousician-hero-mobile@3x.png';
+
 import SpinnerSvg from '../images/audio.svg';
 
 const Hero = styled.header`
   text-align: center;
   color: white;
   background: red;
-  background: url(${HeroImg}) no-repeat;
+  background: url(${HeroImgMobile}) no-repeat;
   background-size: cover;
   padding: 20px;
+
+  @media
+  (min-device-pixel-ratio: 2),
+  (min-resolution: 192dpi) {
+    .img {
+      background-image: url(${HeroImgMobile2X});
+    }
+  }
+
+  @media
+  (min-device-pixel-ratio: 3),
+  (min-resolution: 280dpi) {
+    .img {
+      background-image: url(${HeroImgMobile3X});
+    }
+  }
+
 `;
 
 const Heading = styled.h1`
