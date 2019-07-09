@@ -6,7 +6,7 @@ const favoritesUrl = `${baseApiUrl}favorites`;
 
 const axiosInstance = axios.create({
   baseURL: baseApiUrl,
-  timeout: 1000
+  timeout: 5000
 });
 
 // credit https://stackoverflow.com/a/9310752
@@ -38,7 +38,7 @@ type addSongToFavoritesPayload = {
   songId: string;
 };
 const addSongToFavorites = (songId: addSongToFavoritesPayload) =>
-  axiosInstance.post(favoritesUrl, { songId });
+  axiosInstance.post(favoritesUrl,  songId );
 
 const getSongs = (url: string) => axiosInstance.get(url);
 const getFavorites = () => axiosInstance.get(favoritesUrl);
