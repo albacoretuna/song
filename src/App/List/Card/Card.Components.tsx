@@ -13,6 +13,8 @@ const FavoriteButtonElement = styled.button`
   background-color: transparent;
   border: 0;
   display: inline-block;
+  -ms-grid-column: 4;
+  -ms-grid-row: 1;
 `;
 
 type ListItemProps = {
@@ -20,7 +22,10 @@ type ListItemProps = {
 };
 
 const ListItem = styled.li<ListItemProps>`
+  display: -ms-grid;
   display: grid;
+  -ms-grid-columns: 1fr 1fr 1fr 1fr;
+  -ms-grid-rows: 4fr;
   grid-template-columns: auto 1fr auto auto;
   align-items: center;
   border: none;
@@ -32,12 +37,24 @@ const ListItem = styled.li<ListItemProps>`
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
 `;
 
+const ImageColumn = styled.div`
+  -ms-grid-column: 1;
+  -ms-grid-row: 1;
+`;
+
 const TitleColumn = styled.div`
-  padding: 10px ;
+  -ms-grid-column: 2;
+  -ms-grid-row: 1;
+  padding: 10px;
 
   ${breakpoint('desktop')`
     padding: 10px 20px;
-  `}
+  `};
+`;
+
+const LevelColumn = styled.div`
+  -ms-grid-column: 3;
+  -ms-grid-row: 1;
 `;
 
 const Img = styled.img`
@@ -82,5 +99,7 @@ export {
   Heading,
   ImgWithFallback,
   ListItem,
-  TitleColumn
+  TitleColumn,
+  ImageColumn,
+  LevelColumn
 };

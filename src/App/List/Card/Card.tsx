@@ -14,7 +14,9 @@ import {
   Heading,
   ImgWithFallback,
   ListItem,
-  TitleColumn
+  TitleColumn,
+  ImageColumn,
+  LevelColumn
 } from './Card.Components';
 
 import FavoriteIcon from './FavoriteIcon';
@@ -82,16 +84,16 @@ const Card: FunctionComponent<CardProps> = ({
   };
   return (
     <ListItem index={index}>
-      <div>
+      <ImageColumn>
         <ImgWithFallback src={song.images} alt={song.title} />
-      </div>
+      </ImageColumn>
       <TitleColumn>
         <Heading>{song.title}</Heading>
         <SubHeading>{song.artist}</SubHeading>
       </TitleColumn>
-      <div>
+      <LevelColumn>
         <LevelIndicator level={song.level} />
-      </div>
+      </LevelColumn>
       <FavoriteButtonElement
         data-testid={isFavorite ? 'FavoriteButton' : 'UnFavoriteButton'}
         onClick={() => {
