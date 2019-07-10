@@ -37,6 +37,7 @@ const FilterIcon: FunctionComponent<FilterIconProps> = ({ fillColor }) => (
 
 const ButtonContent = styled.div`
   font-weight: 600;
+  cursor: pointer;
   letter-spacing: 1px;
   font-size: 13px;
   display: flex;
