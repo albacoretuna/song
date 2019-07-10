@@ -14,11 +14,11 @@ import {
   Heading,
   ImgWithFallback,
   ListItem,
-  TitleColumn,
-  FavoriteIcon,
-  FavoriteBorderIcon
+  TitleColumn
 } from './Card.Components';
 
+import FavoriteIcon from './FavoriteIcon';
+import FavoriteBorderIcon from './FavoriteBorderIcon';
 // typings for hooks
 type Dispatch<A> = (value: A) => void;
 type SetStateAction<S> = S | ((prevState: S) => S);
@@ -52,7 +52,8 @@ const Card: FunctionComponent<CardProps> = ({
 
       if (!favorite) return;
 
-        removeSongFromFavorites(favorite.id).then(({ data }) => {
+      removeSongFromFavorites(favorite.id)
+        .then(({ data }) => {
           setFavIsLoading(false);
           // update favorites in state
           setFavorites(favorites =>
@@ -92,7 +93,7 @@ const Card: FunctionComponent<CardProps> = ({
         <LevelIndicator level={song.level} />
       </div>
       <FavoriteButtonElement
-        data-testid={isFavorite ? "FavoriteButton" : "UnFavoriteButton"}
+        data-testid={isFavorite ? 'FavoriteButton' : 'UnFavoriteButton'}
         onClick={() => {
           handleFavoriteButton(song.id, isFavorite);
         }}
@@ -100,7 +101,10 @@ const Card: FunctionComponent<CardProps> = ({
         {isFavorite ? (
           <FavoriteIcon favIsLoading={favIsLoading} />
         ) : (
-          <FavoriteBorderIcon favIsLoading={favIsLoading} data-testid="UnFavoriteButton" />
+          <FavoriteBorderIcon
+            favIsLoading={favIsLoading}
+            data-testid="UnFavoriteButton"
+          />
         )}
       </FavoriteButtonElement>
     </ListItem>

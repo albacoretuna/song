@@ -1,4 +1,4 @@
-// Components used in the Filter component
+// Components used in the Filter component, preferably only tiny ones, larger components get their own files
 
 // libs
 import styled from 'styled-components';
