@@ -13,7 +13,7 @@ const favoritesUrl = `${baseApiUrl}favorites`;
 
 const axiosInstance = axios.create({
   baseURL: baseApiUrl,
-  timeout: 5000
+  timeout: 50000
 });
 
 // credit https://stackoverflow.com/a/9310752
