@@ -1,8 +1,5 @@
-# Treemendous Tree Viewer
+# Song list
 
-This is a tree viewer that reads somme tree meta data from a JSON end point and represents them in your browser.
-
-![Demo of Treemendous tree viewer](tree-viewer-demo.gif?raw=true "Demo")
 
 ## Demo
 
