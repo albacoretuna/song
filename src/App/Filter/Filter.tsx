@@ -9,8 +9,10 @@ import {
   Panel,
   FilterElement,
   DropDownButton,
-  FilterButton
 } from './Filter.Components';
+import {
+  FilterButton
+} from './FilterButton';
 
 // typings for hooks
 type Dispatch<A> = (value: A) => void;

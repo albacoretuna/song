@@ -14,10 +14,12 @@ describe('Testing Song List App', function() {
     cy.get('[data-testid=list-component-songs] li').should('exist');
   });
 
-  it('Typing a none-existent song in search input and pressing enter, shows the not found text', function() {
+  it('Typing a none-existent song in search input clicking search icon, shows the not found text', function() {
     cy.get('[data-testid=SearchComponentInputBox]').type(
       'BlahBlahNoOneWillHaveThisSongTitleOrThisNameYeahSure{enter}'
     );
+    cy.wait(1000);
+    cy.get('[data-testid=SearchSubmitButton]').click();
     cy.wait(1000);
     cy.get('[data-testid=NoSongsFound]').should('exist');
   });
