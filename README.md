@@ -3,47 +3,51 @@
 
 ## Demo
 
-See it live at https://treemendous.netlify.com/
 
 ## Install
 
 ```
+# 1. in the root folder, to get frontend dependencies
 npm install
-```
 
-## Develop
+# 2. in api folder for to get backend dependencies
+cd api && npm install
 
-```
+# 3. start the app
 npm start
 ```
 
+It should run the server and also open a browser to your app.
+
+Make sure you got ports 3000 and 3004 free :)
+
+
 ## Tests
-To run unit and integration tests
+
+To run end to end tests in the browser
+Make sure the app is running and then:
+
 ```
-npm test
+npm run cypress
 ```
 
-To run end to end tests in browser
-Make sure the app is running on localhost:3000, then
+To view the tests being run in a browser window:
 
 ```
 npm run cypress:open
 ```
 
-## Deployment
-With every push to master, CI will automatically run tests and deploy the app to https://treemendous.netlify.com/
+To run unit and integration tests
+```
+npm test
+```
 
-## Features
 
-  * fetch JSON data
-  * TypeScript
-  * List the trees
-  * On click open the photos of the tree
-  * Filter trees by name
-  * Mobile friendly
+```
+npm run cypress:open
+```
 
 ## Ideas for improvement
 
-  * What if the API return tones of photos? Some infinite scrolling or pagination
-  * API schema validation
-  * Error reporting, so that we know what goes wrong before users need to tell us
+  * Improving the performance of the list by rendering only the visible ones
+  * Error handling

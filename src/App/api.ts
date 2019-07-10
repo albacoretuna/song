@@ -1,7 +1,14 @@
 // All things related to talking to backend
 import axios from 'axios';
 
-const baseApiUrl = 'http://localhost:3004/';
+// add a slash to url if there isn't one
+const addSlash = (url :string)  => {
+  if(typeof url === 'string') {
+    return url.replace(/\/?$/, '/');
+  }
+}
+
+const baseApiUrl = addSlash((process.env.REACT_APP_API_BASE) || 'http://127.0.0.1:3004/');
 const favoritesUrl = `${baseApiUrl}favorites`;
 
 const axiosInstance = axios.create({
