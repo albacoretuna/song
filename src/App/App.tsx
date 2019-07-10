@@ -15,6 +15,7 @@ import Filter from './Filter/Filter';
 import GlobalStyle from '../style/GlobalStyle';
 import {
   Hero,
+  InnerHero,
   Heading,
   SubHeading,
   AppWrapper,
@@ -153,6 +154,7 @@ const App: FunctionComponent = () => {
 
         {/* Search and hero */}
         <Hero>
+          <InnerHero>
           <Heading>NEW SONGS DELIVERED EVERY WEEK</Heading>
           <SubHeading>
             Here are the most recent additions to the Yousician App. Start
@@ -163,6 +165,7 @@ const App: FunctionComponent = () => {
             setSearchKeyword={setSearchKeyword}
             fetchSongs={fetchSongs}
           />
+         </InnerHero>
         </Hero>
 
         {/* Level filtering */}

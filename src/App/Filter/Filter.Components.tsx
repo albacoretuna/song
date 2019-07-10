@@ -3,6 +3,7 @@
 // libs
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
+import breakpoint from 'styled-components-breakpoint';
 
 // ours
 import Colors from '../../style/Colors';
@@ -44,6 +45,8 @@ const FilterElement = styled.div`
   color: ${Colors.White};
   overflow: hidden;
   padding: 10px;
+  max-width: 900px;
+  margin: 0 auto;
 `;
 
 type PanelProps = {
@@ -53,12 +56,22 @@ const Panel = styled.div<PanelProps>`
   color: white;
   max-height: ${({ isOpen }) => (isOpen ? '600px' : '0')};
   overflow: hidden;
-  padding: ${({ isOpen }) => (isOpen ? '10px' : '0')};
+  padding: ${({ isOpen }) => (isOpen ? '10px 0' : '0')};
   overflow: hidden;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-gap: 1%;
   margin: 0 auto;
+
+  ${breakpoint('tablet')`
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  `};
+
+  ${breakpoint('desktop')`
+    display: block;
+    grid-template-columns: unset;
+    grid-gap: unset;
+    margin: 0;
+  `}
 `;
 
 const DropDownButton = styled.button`

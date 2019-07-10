@@ -14,6 +14,7 @@ import {
   Heading,
   ImgWithFallback,
   ListItem,
+  TitleColumn,
   FavoriteIcon,
   FavoriteBorderIcon
 } from './Card.Components';
@@ -83,10 +84,10 @@ const Card: FunctionComponent<CardProps> = ({
       <div>
         <ImgWithFallback src={song.images} alt={song.title} />
       </div>
-      <div>
+      <TitleColumn>
         <Heading>{song.title}</Heading>
         <SubHeading>{song.artist}</SubHeading>
-      </div>
+      </TitleColumn>
       <div>
         <LevelIndicator level={song.level} />
       </div>

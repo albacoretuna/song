@@ -6,18 +6,19 @@
 // libs
 import React from 'react';
 import styled from 'styled-components';
+import breakpoint from 'styled-components-breakpoint';
 
 // ours
 import HeroImgMobile from '../images/yousician-hero-mobile.png';
 import HeroImgMobile2X from '../images/yousician-hero-mobile@2x.png';
 import HeroImgMobile3X from '../images/yousician-hero-mobile@3x.png';
+import HeroImgDesktop from '../images/yousician-hero.png';
 
 import SpinnerSvg from '../images/audio.svg';
 
 const Hero = styled.header`
   text-align: center;
   color: white;
-  background: red;
   background: url(${HeroImgMobile}) no-repeat;
   background-size: cover;
   padding: 20px;
@@ -37,6 +38,33 @@ const Hero = styled.header`
       background-image: url(${HeroImgMobile3X});
     }
   }
+
+  ${breakpoint('tablet')`
+    background: url(${HeroImgDesktop}) no-repeat;
+    background-size: cover;
+  `}
+
+  ${breakpoint('desktop')`
+    background: url(${HeroImgDesktop}) no-repeat;
+    background-size: cover;
+  `}
+
+`;
+
+const InnerHero = styled.div`
+
+  text-align: center;
+  color: white;
+  padding: 20px;
+  margin: 0 auto;
+
+  ${breakpoint('tablet')`
+      max-width: 540px;
+  `}
+
+  ${breakpoint('desktop')`
+      max-width: 640px;
+  `}
 
 `;
 
@@ -99,6 +127,7 @@ const LoadingSpinner = () => (
 
 export {
   Hero,
+  InnerHero,
   Heading,
   SubHeading,
   AppWrapper,

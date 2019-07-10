@@ -1,6 +1,7 @@
 // libs
 import React, { FunctionComponent, useEffect } from 'react';
 import styled from 'styled-components';
+import breakpoint from 'styled-components-breakpoint';
 
 // ours
 import { Song, Favorite } from '../App';
@@ -11,7 +12,16 @@ const ListWrapper = styled.ul`
   display: grid;
   grid-template-columns: 1fr;
   justify-content: center;
-  margin: 0;
+  margin: 0 auto;
+
+  ${breakpoint('tablet')`
+      max-width: 640px;
+  `}
+
+  ${breakpoint('desktop')`
+      max-width: 900px;
+  `}
+
 `;
 
 // typings for hooks

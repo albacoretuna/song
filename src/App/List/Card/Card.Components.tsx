@@ -3,6 +3,7 @@
 // libs
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
+import breakpoint from 'styled-components-breakpoint';
 
 // ours
 import Colors from '../../../style/Colors';
@@ -81,10 +82,10 @@ type ListItemProps = {
 
 const ListItem = styled.li<ListItemProps>`
   display: grid;
-  grid-template-columns: 1fr 1fr auto auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   border: none;
-  padding: 20px;
+  padding: 5px;
   height: fit-content;
   background-color: ${({ index }) => (index % 2 === 0 ? 'black' : '#171717')};
   color: white;
@@ -92,9 +93,17 @@ const ListItem = styled.li<ListItemProps>`
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
 `;
 
+const TitleColumn = styled.div`
+  padding: 10px ;
+
+  ${breakpoint('desktop')`
+    padding: 10px 20px;
+  `}
+`;
+
 const Img = styled.img`
   display: inline-block;
-  max-width: 90%;
+  max-width: 100px;
 `;
 
 type ImgWithFallbackProps = {
@@ -102,18 +111,20 @@ type ImgWithFallbackProps = {
   alt: string;
 };
 
-const ImgWithFallback:FunctionComponent<ImgWithFallbackProps> = ({src, alt}) => {
+const ImgWithFallback: FunctionComponent<ImgWithFallbackProps> = ({
+  src,
+  alt
+}) => {
   const addDefaultSrc = (event: any) => {
-    if(event && event.target) {
+    if (event && event.target) {
       event.target.src = PlaceholderForBorkenImages;
       // TODO optionally we send an error report to our error tracking system,
       // to find out about broken image links
     }
-  }
+  };
 
-  return <Img  src={src} alt={alt} onError={addDefaultSrc} />
-
-}
+  return <Img src={src} alt={alt} onError={addDefaultSrc} />;
+};
 
 const Heading = styled.h1`
   font-size: 14px;
@@ -132,6 +143,7 @@ export {
   Heading,
   ImgWithFallback,
   ListItem,
+  TitleColumn,
   FavoriteIcon,
   FavoriteBorderIcon
 };

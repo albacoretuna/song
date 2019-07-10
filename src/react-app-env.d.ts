@@ -9,6 +9,8 @@ declare namespace NodeJS {
   }
 }
 
+declare module 'styled-components-breakpoint';
+
 declare module '*.bmp' {
   const src: string;
   export default src;
