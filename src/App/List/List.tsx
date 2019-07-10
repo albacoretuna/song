@@ -52,11 +52,13 @@ const List: FunctionComponent<ListProps> = ({
 }) => {
   // infinite scrolling handlers
   const handleScroll = () => {
-    const isNotEndOfPageYet = window.innerHeight + document.documentElement.scrollTop !==
-      document.documentElement.offsetHeight;
-    if (isNotEndOfPageYet) return;
-    setIsFetching(true);
+    const isAtPageBottom = (window.innerHeight + Math.ceil(window.pageYOffset)) >= document.body.offsetHeight;
+    if (isAtPageBottom) {
+      setIsFetching(true);
+    }
+
   };
+
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
