@@ -18,7 +18,7 @@ describe('Testing Song List App', function() {
     cy.get('[data-testid=SearchComponentInputBox]').type(
       'BlahBlahNoOneWillHaveThisSongTitleOrThisNameYeahSure{enter}'
     );
-    cy.wait(500);
+    cy.wait(1000);
     cy.get('[data-testid=NoSongsFound]').should('exist');
   });
 
