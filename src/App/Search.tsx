@@ -45,7 +45,13 @@ type SearchProps = {
 const Search: FunctionComponent<SearchProps> = ({ fetchSongs, searchKeyword, setSearchKeyword }) => {
   // in milliseconds, the magic number came from https://stackoverflow.com/a/44755058/3994190
   const waitForUserToStopTyping = 275;
-  const handleInputChange = debounce((inputContent: string) => setSearchKeyword(inputContent), waitForUserToStopTyping);
+  const handleInputChange = debounce((inputContent: string) => {
+    if(inputContent.length === 0) {
+      // to refresh the list when user clears the input box
+      fetchSongs('');
+    }
+    return setSearchKeyword(inputContent)
+  }, waitForUserToStopTyping);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
