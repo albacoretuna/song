@@ -160,6 +160,9 @@ const App: FunctionComponent = () => {
             Here are the most recent additions to the Yousician App. Start
             playing today!
           </SubHeading>
+          <SubHeading>
+              (The backend might be sleeping, please refresh the page after a minute if songs are not loading)
+          </SubHeading>
           <Search
             searchKeyword={searchKeyword}
             setSearchKeyword={setSearchKeyword}
