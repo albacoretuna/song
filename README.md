@@ -3,7 +3,9 @@ A react app that lists songs.
 
 ## Demo
 
-https://songs.okapi.li
+https://songs-nick.netlify.app/
+
+(the backend might be sleeping, refresh the page after a minute until it wakes up)
 
 ## Install
 
